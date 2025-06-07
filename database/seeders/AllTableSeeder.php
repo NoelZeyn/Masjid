@@ -1,0 +1,340 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
+
+class AllTableSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $faker = Faker::create();
+
+        // Warga
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('warga')->insert([
+                'nama_lengkap' => $faker->name,
+                'kontak' => $faker->phoneNumber,
+                'alamat' => $faker->address,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Admin
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('admin')->insert([
+                'nama_lengkap' => $faker->name,
+                'posisi' => 'Ketua',
+                'email' => $faker->unique()->safeEmail,
+                'password' => Hash::make('password'),
+                'tugas' => $faker->sentence,
+                'timestamp' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Data Diri
+        $admins = DB::table('admin')->get();
+        foreach ($admins as $admin) {
+            DB::table('data_diri')->insert([
+                'admin_id' => $admin->id,
+                'NIK' => $faker->unique()->numerify('###########'),
+                'kontak' => $faker->phoneNumber,
+                'alamat' => $faker->address,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Supplier
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('supplier')->insert([
+                'nama_supplier' => $faker->company,
+                'alamat' => $faker->address,
+                'kontak' => $faker->phoneNumber,
+                'email' => $faker->unique()->safeEmail,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Barang
+        $kategory = ['A', 'B', 'C', 'D'];
+        $kondisi = ['bagus', 'rusak', 'habis', 'kotor', 'perbaikan'];
+        $keterangan = ['non-aktif', 'aktif', 'rusak', 'habis'];
+        $suppliers = DB::table('supplier')->get();
+        foreach ($suppliers as $supplier) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('barang')->insert([
+                    'supplier_id' => $supplier->id,
+                    'nama_barang' => $faker->word,
+                    'deskripsi' => $faker->sentence,
+                    'harga' => $faker->numberBetween(50000, 500000),
+                    'stock' => $faker->numberBetween(1, 10),
+                    'merk' => $faker->company,
+                    'kategori' => $faker->randomElement($kategory),
+                    'kondisi' => $faker->randomElement($kondisi),
+                    'keterangan' => $faker->randomElement($keterangan),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Riwayat Penggunaan
+        $barangs = DB::table('barang')->get();
+        foreach ($barangs as $barang) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('riwayat_penggunaan')->insert([
+                    'barang_id_fk' => $barang->id,
+                    'tanggal_pemijaman' => now(),
+                    'deskripsi_penggunaan' => $faker->sentence,
+                    'tanggal_pengembalian' => now()->addDays(1),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Transaksi
+        $tipe_transaksi = ['masuk', 'keluar'];
+        $admins = DB::table('admin')->get();
+        foreach ($admins as $admin) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('transaksi')->insert([
+                    'admin_id' => $admin->id,
+                    'tanggal_transaksi' => now(),
+                    'tipe_transaksi' => $faker->randomElement($tipe_transaksi),
+                    'total_harga' => $faker->numberBetween(100000, 1000000),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Detail Transaksi
+        $transaksis = DB::table('transaksi')->get();
+        $barangs = DB::table('barang')->get();
+        foreach ($transaksis as $transaksi) {
+            foreach ($barangs as $barang) {
+                DB::table('detail_transaksi')->insert([
+                    'transaksi_id_fk' => $transaksi->id,
+                    'barang_id_fk' => $barang->id,
+                    'jumlah' => $faker->numberBetween(1, 5),
+                    'harga_satuan' => $barang->harga,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Pengajuan
+        $status = ['menunggu', 'disetujui', 'ditolak'];
+        $tipe_pengajuan = ['barang', 'dana', 'acara', 'lainnya'];
+        foreach ($admins as $admin) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('pengajuan')->insert([
+                    'admin_id' => $admin->id,
+                    'tipe_pengajuan' => $faker->randomElement($tipe_pengajuan),
+                    'deskripsi' => $faker->sentence,
+                    'status' => $faker->randomElement($status),
+                    'tanggal_pengajuan' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Kritik Saran
+        $wargas = DB::table('warga')->get();
+        foreach ($wargas as $warga) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('kritik_saran')->insert([
+                    'warga_id_fk' => $warga->id,
+                    'pesan' => $faker->sentence,
+                    'tipe' => 'saran',
+                    'tanggal' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Log Aktifitas
+        foreach ($admins as $admin) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('log_aktifitas')->insert([
+                    'admin_id' => $admin->id,
+                    'aksi' => 'Menambahkan barang baru',
+                    'entitas' => 'barang',
+                    'entitas_id' => $barang->id,
+                    'tanggal' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Soft Delete
+        foreach ($admins as $admin) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('soft_delete')->insert([
+                    'admin_id' => $admin->id,
+                    'deskripsi' => $faker->sentence,
+                    'aksi' => 'delete_barang',
+                    'tanggal' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Infaq
+        $kategory_infaq = ['zakat', 'kafarat', 'nazar', 'jihad', 'infaq_membantu', 'infaq_bencana', 'infaq_kemanusiaan', 'mubah', 'haram'];
+        foreach ($wargas as $warga) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('infaq')->insert([
+                    'nama_infaq' => 'Donasi Jumat',
+                    'warga_id_fk' => $warga->id,
+                    'tanggal_pemberian' => now()->toDateString(),
+                    'kategori_infaq' => $faker->randomElement($kategory_infaq),
+                    'jumlah' => $faker->numberBetween(10000, 100000),
+                    'satuan' => 'rupiah',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Kurban
+        foreach ($admins as $admin) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('kurban')->insert([
+                    'jenis_hewan' => 'kambing',
+                    'jumlah' => 2,
+                    'status' => 'belum_disembelih',
+                    'admin_id' => $admin->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Kurban Warga
+        $wargas = DB::table('warga')->get();
+        foreach ($wargas as $warga) {
+            foreach ($barangs as $barang) {
+                DB::table('kurban_warga')->insert([
+                    'kurban_id_fk' => $barang->id,
+                    'warga_id_fk' => $warga->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Riwayat Penyembelihan
+        $kurbans = DB::table('kurban')->get();
+        foreach ($kurbans as $kurban) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('riwayat_penyembelihan')->insert([
+                    'kurban_id_fk' => $kurban->id,
+                    'tanggal' => now(),
+                    'catatan' => $faker->sentence,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Acara
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('acara')->insert([
+                'nama_acara' => 'Maulid Nabi',
+                'deskripsi' => 'Peringatan Maulid Nabi Muhammad SAW',
+                'tanggal_mulai' => now()->toDateString(),
+                'tanggal_selesai' => now()->addDays(1)->toDateString(),
+                'lokasi' => 'Aula Masjid',
+                'waktu' => '19:00',
+                'status' => 'direncanakan',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Peserta Acara
+        $acaras = DB::table('acara')->get();
+        foreach ($acaras as $acara) {
+            foreach ($wargas as $warga) {
+                DB::table('peserta_acara')->insert([
+                    'acara_id_fk' => $acara->id,
+                    'warga_id_fk' => $warga->id,
+                    'status_kehadiran' => 'belum_konfirmasi',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Dokumentasi Acara
+        foreach ($acaras as $acara) {
+            DB::table('dokumentasi_acara')->insert([
+                'acara_id_fk' => $acara->id,
+                'tipe' => 'foto',
+                'catatan' => 'Foto pembukaan acara',
+                'uploaded_at' => now()->toDateString(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Keuangan
+        foreach ($admins as $admin) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('keuangan')->insert([
+                    'tanggal_pelaporan' => now(),
+                    'bulan_ke' => now()->month,
+                    'minggu_ke' => 1,
+                    'saldo_akhir' => 1000000,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Pemasukan
+        $keuangans = DB::table('keuangan')->get();
+        foreach ($keuangans as $keuangan) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('pemasukan')->insert([
+                    'keuangan_id_fk' => $keuangan->id,
+                    'sumber' => 'donasi',
+                    'kategori_pemasukan' => $faker->randomElement($kategory),
+                    'jumlah' => $faker->numberBetween(100000, 1000000),
+                    'tanggal' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Pengeluaran
+        foreach ($keuangans as $keuangan) {
+            for ($i = 0; $i < 10; $i++) {
+                DB::table('pengeluaran')->insert([
+                    'keuangan_id_fk' => $keuangan->id,
+                    'kategori_pengeluaran' => 'operasional',
+                    'jumlah' => $faker->numberBetween(10000, 100000),
+                    'tanggal' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+    }
+}
