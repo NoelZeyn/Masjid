@@ -1,0 +1,280 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font Import */
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Inter:wght@400;500&display=swap'); */
+/* Global Styles */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F1F5F9; /* Soft background */
+  color: #4B5563; /* Darker text for readability */
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  color: #3B82F6; /* Blue accent for subheadings */
+}
+
+p {
+  font-size: 1rem;
+  color: #6B7280; /* Light text color */
+  line-height: 1.6;
+}
+
+/* Custom Colors */
+:root {
+  --primary: #3B82F6;  /* Blue */
+  --secondary: #10B981; /* Green */
+  --accent: #F59E0B; /* Yellow */
+  --background-light: #F1F5F9;
+  --background-dark: #1F2937;
+}
+
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--background-dark);
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar a:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Button Styles */
+button {
+  background-color: var(--primary);
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  background-color: var(--accent);
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Card Styles */
+.card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 8px;
+  }
+}
+
+/* Leaderboard */
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.leaderboard-item {
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.leaderboard-item:nth-child(odd) {
+  background-color: #F9FAFB;
+}
+
+.leaderboard-item .name {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.leaderboard-item .score {
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+}
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px;
+  background-color: var(--secondary);
+  color: white;
+  border-radius: 10px;
+  font-size: 1rem;
+  display: none;
+  transition: opacity 0.3s ease;
+}
+
+.toast.show {
+  display: block;
+  opacity: 1;
+}
+
+.toast.hide {
+  opacity: 0;
+  display: none;
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 4px solid #F3F4F6;
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Quiz Question */
+.question-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.question-container h2 {
+  font-size: 1.25rem;
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.answer {
+  background-color: var(--background-light);
+  padding: 12px 18px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.answer:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.answer:active {
+  background-color: var(--secondary);
+  transform: translateY(0);
+}
+
+.answer.correct {
+  background-color: var(--secondary);
+  color: white;
+}
+
+.answer.incorrect {
+  background-color: #F87171; /* Red for incorrect answers */
+  color: white;
+}
