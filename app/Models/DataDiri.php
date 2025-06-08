@@ -10,13 +10,12 @@ class DataDiri extends Model
 
     protected $fillable = [
         'admin_id',
-        'NIK',
         'kontak',
         'alamat',
     ];
 
     public function admin()
     {
-        return $this->belongsTo(Admin::class, 'admin_id');
+        return $this->hasOne(Admin::class);
     }
 }

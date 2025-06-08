@@ -25,25 +25,36 @@ class AllTableSeeder extends Seeder
         }
 
         // Admin
+        $status = ['success', 'failed', 'pending'];
         for ($i = 0; $i < 10; $i++) {
             DB::table('admin')->insert([
                 'nama_lengkap' => $faker->name,
                 'posisi' => 'Ketua',
                 'email' => $faker->unique()->safeEmail,
                 'password' => Hash::make('password'),
+                'status' => 'success',
                 'tugas' => $faker->sentence,
-                'timestamp' => now(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
+
+        DB::table('admin')->insert([
+            'nama_lengkap' => 'admin2',
+            'posisi' => 'Ketua',
+            'email' => 'admin2@gmail.com',
+            'password' => Hash::make('password123'),
+            'status' => 'success',
+            'tugas' => $faker->sentence,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         // Data Diri
         $admins = DB::table('admin')->get();
         foreach ($admins as $admin) {
             DB::table('data_diri')->insert([
                 'admin_id' => $admin->id,
-                'NIK' => $faker->unique()->numerify('###########'),
                 'kontak' => $faker->phoneNumber,
                 'alamat' => $faker->address,
                 'created_at' => now(),
@@ -253,10 +264,12 @@ class AllTableSeeder extends Seeder
         }
 
         // Acara
+        $kategory_infaq = ['zakat', 'kafarat', 'nazar', 'jihad', 'infaq_membantu', 'infaq_bencana', 'infaq_kemanusiaan', 'mubah', 'haram'];
         for ($i = 0; $i < 10; $i++) {
             DB::table('acara')->insert([
                 'nama_acara' => 'Maulid Nabi',
                 'deskripsi' => 'Peringatan Maulid Nabi Muhammad SAW',
+                'kategori'=> $faker->randomElement($kategory_infaq),
                 'tanggal_mulai' => now()->toDateString(),
                 'tanggal_selesai' => now()->addDays(1)->toDateString(),
                 'lokasi' => 'Aula Masjid',

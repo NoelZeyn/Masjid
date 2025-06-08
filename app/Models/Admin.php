@@ -4,19 +4,45 @@ namespace App\Models;
 
 use App\Models\Kurban\Kurban;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Admin extends Model
+class Admin extends Authenticatable implements JWTSubject
 {
+    use Notifiable;
     protected $table = 'admin';
 
     protected $fillable = [
         'nama_lengkap',
         'posisi',
         'email',
+        'status',
         'password',
         'tugas',
         'timestamp',
+        'foto_ktp',
+        'foto_profil',
     ];
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     public function kurban()
     {
@@ -45,6 +71,6 @@ class Admin extends Model
 
     public function dataDiri()
     {
-        return $this->hasMany(DataDiri::class, 'admin_id');
+        return $this->hasOne(DataDiri::class);
     }
 }

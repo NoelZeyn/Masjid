@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_acara');
             $table->string('deskripsi')->nullable();
+            $table->string('kategori')->nullable();
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->string('lokasi');

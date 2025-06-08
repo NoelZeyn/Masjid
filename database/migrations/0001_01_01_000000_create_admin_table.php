@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('nama_lengkap');
             $table->string('posisi')->nullable();
+            $table->string('google_id')->nullable();
+            $table->string('foto_ktp')->nullable();
+            $table->string('foto_profil')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->string('tugas')->nullable();
-            $table->date('timestamp');
+            $table->enum('status', ['success', 'failed', 'pending']);
             $table->timestamps();
         });
     }

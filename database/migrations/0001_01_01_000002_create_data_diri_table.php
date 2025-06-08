@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('data_diri', function (Blueprint $table) {
             $table->id();
             $table->foreignId('admin_id')->constrained('admin');
-            $table->string('NIK');
-            $table->string('kontak');
-            $table->string('alamat');
+            $table->string('kontak')->nullable();
+            $table->string('alamat')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('tiktok')->nullable();
             $table->timestamps();
         });
     }
