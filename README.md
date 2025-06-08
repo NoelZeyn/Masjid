@@ -1,61 +1,85 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🕌 Sistem Informasi Manajemen Masjid (SIMMasjid)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**SIMMasjid** adalah aplikasi berbasis web yang dirancang untuk memudahkan pengelolaan kegiatan operasional masjid seperti manajemen admin, inventaris barang, pengajuan, acara, kurban, hingga laporan keuangan. Sistem ini dibangun dengan struktur database relasional yang kompleks dan terorganisir.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🗂️ Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🔐 Manajemen Admin
+- Registrasi dan login admin (email/Google ID)
+- Data lengkap admin: posisi, tugas, foto KTP, foto profil
+- Log aktivitas admin & sistem soft delete
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 📦 Inventaris Barang
+- CRUD data barang: nama, deskripsi, harga, stok, gambar, merk, kategori, kondisi
+- Supplier barang dan riwayat transaksi masuk/keluar
+- Peminjaman barang & histori penggunaan
 
-## Learning Laravel
+### 📝 Pengajuan & Kritik Saran
+- Pengajuan oleh admin: barang, dana, acara, dll.
+- Warga dapat menyampaikan kritik, saran, atau keluhan
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🐑 Manajemen Kurban
+- Data hewan kurban dan relasi dengan warga
+- Status penyembelihan dan dokumentasi riwayat
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 🍽️ Acara & Kegiatan
+- Manajemen acara: nama, waktu, lokasi, status
+- Kehadiran peserta warga
+- Dokumentasi kegiatan: foto, video, dokumen
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 💰 Laporan Keuangan
+- Laporan bulanan dan mingguan keuangan
+- Pemasukan dan pengeluaran masjid
+- Infaq warga berdasarkan kategori (zakat, jihad, dsb)
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🧱 Struktur Tabel Utama
 
-### Premium Partners
+| Tabel | Deskripsi |
+|------|-----------|
+| `admin` | Data utama akun pengelola |
+| `data_diri` | Informasi tambahan admin |
+| `barang` | Data barang/inventaris masjid |
+| `supplier` | Data penyedia barang |
+| `transaksi` & `detail_transaksi` | Transaksi barang masuk/keluar |
+| `riwayat_penggunaan` | Peminjaman & penggunaan barang |
+| `pengajuan` | Pengajuan kebutuhan oleh admin |
+| `kritik_saran` | Masukan dari warga |
+| `log_aktifitas` | Riwayat aksi admin |
+| `softdelete` | Sistem hapus lunak (soft delete) |
+| `infaq` | Catatan donasi/infaq warga |
+| `kurban`, `kurban_warga`, `riwayat_penyembelihan` | Manajemen dan riwayat kurban |
+| `warga` | Data pribadi warga |
+| `acara`, `peserta_acara`, `dokumentasi_acara` | Kegiatan/acara masjid |
+| `keuangan`, `pemasukan`, `pengeluaran` | Pengelolaan dan laporan keuangan |
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🔗 Relasi Penting
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- `admin.id` → `transaksi.admin_id`, `pengajuan.admin_id`, `log_aktifitas.admin_id`, dll.
+- `barang.id` → `detail_transaksi.barang_id_fk`, `riwayat_penggunaan.barang_id_fk`
+- `transaksi.id` → `detail_transaksi.transaksi_id_fk`
+- `supplier.id` → `barang.supplier_id`
+- `warga.id` → `kritik_saran.warga_id_fk`, `kurban_warga.warga_id_fk`, `peserta_acara.warga_id_fk`, `infaq.warga_id_fk`
+- `kurban.id` → `kurban_warga.kurban_id_fk`, `riwayat_penyembelihan.kurban_id_fk`
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 💡 Catatan
+- Gunakan enum pada beberapa kolom seperti `status`, `kategori`, `kondisi`, dll. untuk menjaga konsistensi data.
+- Sistem soft-delete (`softdelete`) berguna untuk menyimpan jejak penghapusan data.
+- Dokumentasi acara dapat dikelola dalam berbagai bentuk (foto, video, dokumen).
+- Kategori barang (`A`, `B`, `C`, `D`) bisa di-CRUD secara dinamis sesuai kebutuhan.
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🧑‍💻 Pengembang
 
-## License
+Proyek ini dikembangkan untuk membantu pengelolaan kegiatan masjid secara digital, transparan, dan terintegrasi. Siap dikembangkan lebih lanjut untuk kebutuhan komunitas lainnya.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> Silakan fork dan kirimkan pull request jika ingin berkontribusi!
+
