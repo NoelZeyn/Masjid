@@ -19,14 +19,14 @@ class ProfileController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function showProfile($id)
+    public function showProfile()
     {
         try {
             //check di Model Admin
-            $admin = Admin::with('dataDiri')->findOrFail($id);
+            $admin = Admin::with('dataDiri')->findOrFail(Auth::id());
 
             // Generate URL foto_profil jika ada
-            $fotoProfilUrl = $admin->foto_profil ? asset('storage/app/public/' . $admin->foto_profil) : null;
+            $fotoProfilUrl = $admin->foto_profil ? asset('storage/' . $admin->foto_profil) : null;
 
             return response()->json([
                 'status' => 'success',
@@ -52,10 +52,10 @@ class ProfileController extends Controller
         }
     }
 
-    public function updateProfile(Request $request, $id)
+    public function updateProfile(Request $request)
     {
         try {
-            $admin = Admin::with('dataDiri')->findOrFail($id);
+            $admin = Admin::with('dataDiri')->findOrFail(Auth::id());
 
             $validator = Validator::make($request->all(), [
                 'nama_lengkap' => 'required|string|max:255',
@@ -119,7 +119,7 @@ class ProfileController extends Controller
                     'email' => $admin->email,
                     'posisi' => $admin->posisi,
                     'tugas' => $admin->tugas,
-                    'foto_profil' => $admin->foto_profil ? asset('storage/' . $admin->foto_profil) : null,
+                    'foto_profil' => $admin->foto_profil ? asset('storage/app/public/' . $admin->foto_profil) : null,
                     'kontak' => optional($admin->dataDiri)->kontak,
                     'alamat' => optional($admin->dataDiri)->alamat,
                     'instagram' => optional($admin->dataDiri)->instagram,

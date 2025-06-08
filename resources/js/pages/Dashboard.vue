@@ -60,6 +60,7 @@ export default {
   },
   data() {
     return {
+                  activeMenu: "dashboard",
       logoImage,
       iconKalender,
       userName: "",

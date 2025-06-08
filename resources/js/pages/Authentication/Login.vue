@@ -176,8 +176,10 @@ export default {
                 const meResponse = await axios.post(`${apiUrl}/me`, {});
                 const role = meResponse.data.posisi;
                 const nama_lengkap = meResponse.data.nama_lengkap;
+                const id = meResponse.data.id;
                 localStorage.setItem("userRole", role);
                 localStorage.setItem("userName", nama_lengkap);
+                // localStorage.setItem("id", id)
 
                 this.message = "Login berhasil!";
                 this.messageClass = "text-green-600 font-bold";

@@ -1,11 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // Import components
-import Login from "./pages/Login.vue";
-import Register from "./pages/Register.vue";
+import Login from "./pages/Authentication/Login.vue";
+import Register from "./pages/Authentication/Register.vue";
 import Dashboard from "./pages/Dashboard.vue";
-import LoginTransition from "./pages/LoginTransition.vue";
+import LoginTransition from "./pages/Authentication/LoginTransition.vue";
 import RegisterNext from "./components/Register-next.vue";
+import Feature from "./pages/Feature.vue";
+import Profile from "./pages/Profile/Profile.vue";
+import ProfileEdit from "./pages/Profile/Profile-edit.vue";
+import UbahPassword from "./pages/Profile/UbahPassword.vue";
 
 // Fungsi validasi token
 const isTokenValid = () => {
@@ -20,6 +24,9 @@ const routes = [
     { path: "/", redirect: "/register", meta: { title: "Login" } },
     { path: "/login", component: Login, meta: { title: "Login" } },
     { path: "/register", component: Register, meta: { title: "Register" } },
+    { path: "/feature", name: "Feature", component: Feature, meta: { title: "Feature" } },
+    { path: "/profile", name: "Profile", component: Profile, meta: { title: "Profile" } },
+    { path: "/profile-edit", name: "ProfileEdit", component: ProfileEdit, meta: { title: "Profile Edit" } },
     {
         path: "/register-next",
         component: RegisterNext,
@@ -27,6 +34,7 @@ const routes = [
     },
     {path: "/loginTransition", component: LoginTransition, meta: { title: "Login Transition" }},
     { path: "/dashboard", component: Dashboard, meta: { title: "Dashboard" } },
+    { path: "/ubah-password", component: UbahPassword, meta: { title: "Password Change" } },
 ];
 
 // Membuat router dengan history mode

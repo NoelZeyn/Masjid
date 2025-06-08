@@ -6,16 +6,16 @@
     </button>
 
     <!-- Sidebar -->
-    <aside :class="['transition-transform duration-300 z-[1000] fixed md:static top-0 left-0 h-screen w-[300px] bg-white border-r border-gray-200 pl-5 pt-5 flex flex-col gap-6', { '-translate-x-full': !isSidebarOpen && isMobile }]">
+    <aside :class="['transition-transform duration-300 z-[1000] fixed md:static top-0 left-0 h-screen w-[270px] bg-white border-r border-gray-200 pl-5 pt-5 flex flex-col gap-6', { '-translate-x-full': !isSidebarOpen && isMobile }]">
       <!-- Logo -->
       <div class="flex items-center gap-1 border-b border-gray-200 pb-2">
-        <img :src="logoImage" alt="L    ogo" class="w-[35px] object-cover rounded-t-[10px] mt-[-5px]" />
+        <img :src="logoImage" alt="Logo" class="w-[35px] object-cover rounded-t-[10px] mt-[-5px]" />
         <span class="text-[20px] text-[#08607a] font-['Protest_Strike']">MasjidCare</span>
       </div>
 
       <!-- Menu Utama -->
       <div class="flex flex-col gap-2 -mt-4">
-        <p class="text-xs font-semibold text-[#b0b385] mb-1">Main Menu</p>
+        <p class="text-xs font-semibold text-[#b0b385] mb-1 ">Main Menu</p>
         <ul>
           <router-link v-if="role !== 'ss'" to="/dashboard" class="block">
             <li :class="menuClass('dashboard')">
@@ -23,14 +23,20 @@
               <span>Dashboard</span>
             </li>
           </router-link>
-
-          <router-link v-if="role !== 'ss'" to="/inventaris" class="block">
+          <router-link v-if="role !== 'ss'" to="/feature" class="block">
+            <li :class="menuClass('feature')">
+              <img src="@/assets/data1.svg" class="w-5" alt="Feature" />
+              <span>Feature</span>
+            </li>
+          </router-link>
+          
+          <!-- <router-link v-if="role !== 'ss'" to="/inventaris" class="block">
             <li :class="menuClass('inventaris')" @click="setActive('inventaris')">
               <img src="@/assets/posko.svg" class="w-5" alt="inventaris" />
               <span>Inventaris</span>
             </li>
           </router-link>
-
+          
           <router-link v-if="role !== 'ss'" to="/keuangan" class="block">
             <li :class="menuClass('keuangan')">
               <img src="@/assets/data1.svg" class="w-5" alt="keuangan" />
@@ -51,15 +57,13 @@
               <span>Acara Masjid</span>
             </li>
           </router-link>
-
-          <router-link v-if="role !== 'ss'" to="/admin-verifikator" class="block">
+ -->
+          <router-link v-if="role === 'Ketua'" to="/admin-verifikator" class="block">
             <li :class="menuClass('verifikasi')">
               <img src="@/assets/profil.svg" class="w-5" alt="Verifikasi" />
-              <span>Verifikasi</span>
+              <span>Verifikasi Admin</span>
             </li>
           </router-link>
-
-
         </ul>
       </div>
 
@@ -67,10 +71,10 @@
       <div class="flex flex-col gap-2">
         <p class="text-xs font-semibold text-[#b0b385] mb-1">Admin</p>
         <ul>
-          <router-link to="/profil" class="block">
+          <router-link to="/profile" class="block">
             <li :class="menuClass('profile')">
               <img src="@/assets/profil.svg" class="w-5" alt="Profile" />
-              <span>Profil</span>
+              <span>Profile</span>
             </li>
           </router-link>
           <li class="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-[#7d7f81] hover:bg-slate-100 cursor-pointer" @click="showModalConfirm = true">
@@ -155,7 +159,7 @@ export default {
       return [
         'flex items-center gap-2 px-3 py-2 rounded-md text-sm cursor-pointer w-full',
         isActive
-          ? 'bg-[#84bbd1] text-[#074a5d] font-bold'
+          ? 'bg-[#84bbd1] text-[#074a5d] font-semibold'
           : 'text-[#7d7f81] hover:bg-slate-100'
       ];
     },

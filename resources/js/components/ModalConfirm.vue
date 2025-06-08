@@ -33,7 +33,6 @@ export default {
   },
   data() {
     return {
-      // Pastikan gambar yang diimport bisa dipakai di template
       ConfirmDelete: ConfirmDelete
     };
   }

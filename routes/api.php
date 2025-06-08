@@ -16,7 +16,9 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('me', [AdminController::class, 'me']);
 });
 Route::group(['middleware' => 'api'], function ($router) {
-    Route::get('profile/{id}', [ProfileController::class, 'showProfile']);
+    Route::get('profile', [ProfileController::class, 'showProfile']);
+    Route::put('profile', [ProfileController::class, 'updateProfile']);
+    Route::post('editPassword', [ProfileController::class, 'updatePassword']);
 });
 
 
