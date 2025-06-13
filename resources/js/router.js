@@ -5,7 +5,7 @@ import Login from "./pages/Authentication/Login.vue";
 import Register from "./pages/Authentication/Register.vue";
 import Dashboard from "./pages/Dashboard.vue";
 import LoginTransition from "./pages/Authentication/LoginTransition.vue";
-import RegisterNext from "./components/Register-next.vue";
+import RegisterNext from "./pages/Authentication/Register-next.vue";
 import Feature from "./pages/Feature.vue";
 import Profile from "./pages/Profile/Profile.vue";
 import ProfileEdit from "./pages/Profile/Profile-edit.vue";
@@ -21,7 +21,7 @@ const isTokenValid = () => {
 // Daftar route dengan pemisahan yang memerlukan token dan yang tidak
 const routes = [
     // Public routes (Tidak memerlukan token)
-    { path: "/", redirect: "/register", meta: { title: "Login" } },
+    { path: "/", redirect: "/register",meta: { title: "Register" } },
     { path: "/login", component: Login, meta: { title: "Login" } },
     { path: "/register", component: Register, meta: { title: "Register" } },
     { path: "/feature", name: "Feature", component: Feature, meta: { title: "Feature" } },
