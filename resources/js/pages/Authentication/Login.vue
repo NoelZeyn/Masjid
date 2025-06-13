@@ -1,17 +1,13 @@
 <template>
-    <div class="flex min-h-screen flex-col md:flex-row">
+    <div class="flex h-screen flex-col md:flex-row">
         <!-- Left Side (Hidden on Mobile) -->
-        <div class="hidden md:flex w-full md:w-2/5 bg-[#1a4e44] text-white flex-col rounded-l-lg overflow-hidden">
-            <div>
-                <img :src="babyImage" alt="Baby Image" class="w-full h-60 object-cover rounded-md" />
-                <img :src="dokterImage" alt="Dokter Image" class="w-full h-60 object-cover rounded-md" />
-            </div>
-
-            <div class="space-y-2 p-8">
+        <div class="hidden md:flex w-full md:w-2/5 text-white rounded-r-lg overflow-hidden bg-cover bg-center opacity-80"
+            :style="{ backgroundImage: `url(${mosqueBackground})` }">
+      <div class="space-y-2 p-8 bg-black/50 h-full flex flex-col items-center justify-center text-center mb-5 w-[100%]">
                 <h2 class="text-3xl font-bold">Selamat Datang</h2>
                 <p class="text-base leading-relaxed text-white/90">
-                    Mengelola informasi kesehatan ibu dan anak, laporan
-                    kegiatan, dan data kunjungan dalam satu platform praktis.
+                    Mengelola informasi kesehatan ibu dan anak, laporan kegiatan, dan data kunjungan dalam satu platform
+                    praktis.
                 </p>
             </div>
         </div>
@@ -23,12 +19,9 @@
                 <span class="logo-text">MasjidCare</span>
             </div>
 
-
-            <div class="flex flex-col items-center text-center mb-5 w-[100%] max-w-md">
+            <div class="flex flex-col items-center text-center mb-5 w-full max-w-md">
                 <h2 class="text-3xl font-semibold mb-2 w-full">Masuk Akun MasjidCare</h2>
-                <p class="text-sm text-gray-500 mb-6">
-                    Monitor, Manage, and Care Better
-                </p>
+                <p class="text-sm text-gray-500 mb-6">Monitor, Manage, and Care Better</p>
 
                 <form @submit.prevent="login" class="w-full">
                     <!-- Email Input -->
@@ -43,14 +36,14 @@
                     </div>
 
                     <!-- Password Input -->
-                    <div class="mb-4 ">
+                    <div class="mb-2">
                         <label class="block text-left font-semibold mb-1">Password</label>
                         <div class="relative">
                             <img src="@/assets/password.svg"
                                 class="absolute top-1/2 left-3 transform -translate-y-1/2 w-6 h-6 opacity-60" />
                             <input :type="showPassword ? 'text' : 'password'" v-model="form.password"
                                 placeholder="Masukkan password Anda" minlength="8" required
-                                class="pl-12 pr-10 py-3 w-full rounded-xl border border-gray-300 text-gray-800 focus:outline-none " />
+                                class="pl-12 pr-10 py-3 w-full rounded-xl border border-gray-300 text-gray-800 focus:outline-none" />
                             <button type="button" @click="togglePassword"
                                 class="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer">
                                 <img :src="showPassword ? eyeOffIcon : eyeIcon" alt="Toggle Password" class="w-5 h-5" />
@@ -59,8 +52,9 @@
                     </div>
 
                     <!-- Forgot Password -->
-                    <div class="text-right mb-4">
-                        <router-link to="/forgot-password" class="cursor-pointer text-sm font-semibold text-[#ffad54] hover:underline">
+                    <div class="text-right mb-3">
+                        <router-link to="/forgot-password"
+                            class="cursor-pointer text-sm font-semibold text-[#ffad54] hover:underline">
                             Forgot Password?
                         </router-link>
                     </div>
@@ -78,10 +72,7 @@
                 </p>
 
                 <!-- Divider -->
-                <div class="w-full my-6 flex items-center justify-center">
-                    <div class="border-t w-1/3"></div>
-                    <span class="px-4 text-gray-500">Or</span>
-                    <div class="border-t w-1/3"></div>
+                <div class="w-full my-3 flex items-center justify-center">
                 </div>
 
                 <!-- Google Login -->
@@ -96,8 +87,7 @@
                 <!-- Sign Up Link -->
                 <p class="text-sm">
                     Don't have an account?
-                    <router-link to="/register" class="text-sm text-[#ffad54] hover:underline">Sign
-                        Up</router-link>
+                    <router-link to="/register" class="text-sm text-[#ffad54] hover:underline">Sign Up</router-link>
                 </p>
             </div>
         </div>
@@ -105,12 +95,10 @@
 </template>
 
 <script>
+import mosqueBackground from "@/assets/mosque-background.png";
 import axios from "axios";
-import babyImage from "@/assets/baby.jpg";
-import dokterImage from "@/assets/dokter.png";
 import logoImage from "@/assets/logo.png";
 import googleLogo from "@/assets/Google.svg";
-import appleLogo from "@/assets/Apple.svg";
 import eyeIcon from "@/assets/eye.svg";
 import eyeOffIcon from "@/assets/eye-off.svg";
 import passwordIcon from "@/assets/password.svg";
@@ -123,13 +111,11 @@ export default {
                 password: "",
                 rememberMe: false,
             },
+            mosqueBackground,
             message: "",
             messageClass: "",
-            babyImage,
-            dokterImage,
             logoImage,
             googleLogo,
-            appleLogo,
             showPassword: false,
             eyeIcon,
             eyeOffIcon,
@@ -141,58 +127,36 @@ export default {
             this.showPassword = !this.showPassword;
         },
         loginWithGoogle() {
-            // no /api
-            const backendUrl =
-                import.meta.env.VITE_APP_URL ||
-                "http://localhost:8000";
+            const backendUrl = import.meta.env.VITE_APP_URL || "http://localhost:8000";
             window.location.href = `${backendUrl}/auth/google`;
         },
         async login() {
             try {
-                const apiUrl =
-                    import.meta.env.VITE_APP_URL ||
-                    "http://localhost:8000/api";
-                const { data } = await axios.post(
-                    `${apiUrl}/login`,
-                    this.form,
-                    {
-                        headers: {
-                            Accept: "application/json",
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                const apiUrl = import.meta.env.VITE_APP_URL || "http://localhost:8000/api";
+                const { data } = await axios.post(`${apiUrl}/login`, this.form, {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                });
 
                 const expiresIn = 7 * 24 * 60 * 60 * 1000;
                 const expiryTime = Date.now() + expiresIn;
 
                 localStorage.setItem("token", data.access_token);
                 localStorage.setItem("token_expiry", expiryTime);
-
-                axios.defaults.headers.common[
-                    "Authorization"
-                ] = `Bearer ${data.access_token}`;
+                axios.defaults.headers.common["Authorization"] = `Bearer ${data.access_token}`;
 
                 const meResponse = await axios.post(`${apiUrl}/me`, {});
-                const role = meResponse.data.posisi;
-                const nama_lengkap = meResponse.data.nama_lengkap;
-                const id = meResponse.data.id;
+                const { posisi: role, nama_lengkap } = meResponse.data;
+
                 localStorage.setItem("userRole", role);
                 localStorage.setItem("userName", nama_lengkap);
-                // localStorage.setItem("id", id)
 
                 this.message = "Login berhasil!";
                 this.messageClass = "text-green-600 font-bold";
 
                 this.$router.push("/dashboard");
-                // if (role === "Admin Verifikator") {
-                //     this.$router.push("/admin-verifikator");
-                // } else if (role === "Admin Desa" || role === "Kader") {
-                //     this.$router.push("/dashboard");
-                // } else {
-                //     this.message = `Login berhasil, tetapi role '${role}' tidak dikenali.`;
-                //     this.messageClass = "text-red-600 font-bold";
-                // }
             } catch (error) {
                 this.message = error.response?.data?.message || "Login gagal.";
                 this.messageClass = "text-red-600 font-bold";

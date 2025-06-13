@@ -1,17 +1,14 @@
 <template>
     <div class="flex min-h-screen flex-col md:flex-row">
         <!-- Left Side (Hidden on Mobile) -->
-        <div class="hidden md:flex w-full md:w-2/5 bg-[#1a4e44] text-white flex-col rounded-l-lg overflow-hidden">
-            <div>
-                <img :src="babyImage" alt="Baby Image" class="w-full h-60 object-cover rounded-md" />
-                <img :src="dokterImage" alt="Dokter Image" class="w-full h-60 object-cover rounded-md" />
-            </div>
+        <div class="hidden md:flex w-full md:w-2/5 text-white rounded-r-lg overflow-hidden bg-cover bg-center opacity-80"
+            :style="{ backgroundImage: `url(${mosqueBackground})` }">
+      <div class="space-y-2 p-8 bg-black/50 h-full flex flex-col items-center justify-center text-center mb-5 w-[100%]">
 
-            <div class="space-y-2 p-8">
                 <h2 class="text-3xl font-bold">Selamat Datang</h2>
                 <p class="text-base leading-relaxed text-white/90">
-                    Mengelola informasi kesehatan ibu dan anak, laporan
-                    kegiatan, dan data kunjungan dalam satu platform praktis.
+                    Mengelola informasi kesehatan ibu dan anak, laporan kegiatan, dan data kunjungan dalam satu platform
+                    praktis.
                 </p>
             </div>
         </div>
@@ -24,7 +21,7 @@
             </div>
 
             <div class="flex flex-col items-center text-center mb-5 w-[100%] max-w-md">
-                <h2 class="text-3xl font-semibold mb-2 w-full">Masuk Akun MasjidCare</h2>
+                <h2 class="text-3xl font-semibold mb-2 w-full">Register Akun MasjidCare</h2>
                 <p class="text-sm text-gray-500 mb-6">
                     Monitor, Manage, and Care Better
                 </p>
@@ -59,7 +56,7 @@
 
                     <!-- Sign In Button -->
                     <button type="submit"
-                        class="w-full mt-5 py-3 bg-[#4f93af] text-white font-semibold rounded-3xl hover:bg-[#166357]">
+                        class="cursor-pointer w-full mt-2 py-3 bg-[#4f93af] text-white font-semibold rounded-3xl hover:bg-[#166357]">
                         Register
                     </button>
                 </form>
@@ -70,15 +67,12 @@
                 </p>
 
                 <!-- Divider -->
-                <div class="w-full my-6 flex items-center justify-center">
-                    <div class="border-t w-1/3"></div>
-                    <span class="px-4 text-gray-500">Or</span>
-                    <div class="border-t w-1/3"></div>
+                <div class="w-full my-3 flex items-center justify-center">
                 </div>
 
                 <!-- Google Login -->
                 <div class="flex justify-center gap-2 mb-5">
-                    <button @click="loginWithGoogle"
+                    <button @click="googleRegister"
                         class="flex items-center justify-center px-6 py-2 border border-gray-300 rounded-full bg-white cursor-pointer text-sm text-center w-55 hover:bg-gray-100 transition">
                         <img :src="googleLogo" alt="Google Logo" class="w-5 h-5 mr-2" />
                         <strong>Register with Google</strong>
@@ -99,7 +93,7 @@
 
 <script>
 import axios from "axios";
-
+import mosqueBackground from "@/assets/mosque-background.png";
 import eyeIcon from "@/assets/eye.svg";
 import eyeOffIcon from "@/assets/eye-off.svg";
 import babyImage from "@/assets/baby.jpg";
@@ -120,6 +114,7 @@ export default {
                 email: "",
                 password: "",
             },
+            mosqueBackground,
             message: "",
             messageClass: "",
             showPassword: false,
