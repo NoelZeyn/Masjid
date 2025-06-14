@@ -19,12 +19,17 @@ class Acara extends Model
         'status',
     ];
 
-    public function dokumentasiAcara(){
+    public function dokumentasiAcara()
+    {
         return $this->hasMany(DokumentasiAcara::class, 'acara_id_fk');
     }
-    public function warga(){
+    public function warga()
+    {
         return $this->belongsToMany(Warga::class, 'peserta_acara', 'acara_id_fk', 'warga_id_fk')->withPivot('status_kehadiran');
     }
 
-    
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriAcara::class, 'kategori_id');
+    }
 }

@@ -10,6 +10,11 @@ import Feature from "./pages/Feature.vue";
 import Profile from "./pages/Profile/Profile.vue";
 import ProfileEdit from "./pages/Profile/Profile-edit.vue";
 import UbahPassword from "./pages/Profile/UbahPassword.vue";
+import Acara from "./pages/Acara/Acara.vue";
+import AcaraInfo from "./pages/Acara/Acara-info.vue";
+import AcaraDashboard from "./pages/Acara/AcaraDashboard.vue";
+import AcaraEdit from "./pages/Acara/Acara-edit.vue";
+import AcaraAdd from "./pages/Acara/Acara-add.vue";
 
 // Fungsi validasi token
 const isTokenValid = () => {
@@ -27,6 +32,11 @@ const routes = [
     { path: "/feature", name: "Feature", component: Feature, meta: { title: "Feature" } },
     { path: "/profile", name: "Profile", component: Profile, meta: { title: "Profile" } },
     { path: "/profile-edit", name: "ProfileEdit", component: ProfileEdit, meta: { title: "Profile Edit" } },
+    { path: "/acara-dashboard", name: "AcaraDashboard", component: AcaraDashboard, meta: { title: "Acara Dashboard" } },
+    { path: "/acara", name: "Acara", component: Acara, meta: { title: "Acara" } },
+    { path: "/acara-add", name: "AcaraAdd", component: AcaraAdd, meta: { title: "Acara Add" } },
+    { path: "/acara-informasi/:id", name: "AcaraInfo", component: AcaraInfo, meta: { title: "Acara Informasi" } },
+    { path: "/acara-edit/:id", name: "AcaraEdit", component: AcaraEdit, meta: { title: "Acara Edit" } },
     {
         path: "/register-next",
         component: RegisterNext,
