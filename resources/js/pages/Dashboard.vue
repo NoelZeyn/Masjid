@@ -5,8 +5,8 @@
 
     <!-- Main Content -->
     <div class="flex-1 p-8 pt-4 bg-white">
-      <HeaderBar title="Dashboard" />
-      <div class="my-4 border-b border-gray-300 pt-1"></div>
+      <HeaderBar title="Dashboard" class="mt-3"/>
+      <div class="my-4 border-b border-gray-300"></div>
 
       <!-- Header Section -->
       <div class="flex flex-wrap justify-between items-center mt-[-10px] pt-5 gap-2">

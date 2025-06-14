@@ -1,9 +1,9 @@
 <template>
     <div class="flex min-h-screen bg-gray-100">
         <Sidebar :activeMenu="activeMenu" @update:activeMenu="updateActiveMenu" />
-        <div class="flex-1 px-8 pt-3 bg-white flex flex-col">
-            <HeaderBar title="Ubah Password" />
-            <div class="border-b border-gray-300 my-1"></div>
+    <div class="flex-1 p-8 pt-4 bg-white">
+      <HeaderBar title="Perubahan Password" class="mt-3"/>
+      <div class="my-4 border-b border-gray-300"></div>
 
             <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-300 mt-6">
                 <div class="p-8">

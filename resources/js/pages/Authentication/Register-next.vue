@@ -11,10 +11,10 @@
     </div>
 
     <div class="w-full md:w-3/5 flex flex-col items-center pt-5 overflow-hidden pb-8">
-      <div class="flex items-center gap-3 self-start ml-12 mb-10">
-        <img :src="logoImage" alt="Logo Image" class="w-[75px] rounded-t-lg object-cover" />
-        <span class="logo-text">MasjidCare</span>
-      </div>
+            <div class="flex items-center gap-3 self-start ml-12 mb-10">
+                <img :src="logoImage" alt="Logo Image" class="w-[75px] rounded-t-lg object-cover" />
+                <span class="logo-text text-[20px] font-bold text-[#08607a] font-['Protest_Strike']">MasjidCare</span>
+            </div>
 
       <div class="w-[80%] max-w-[450px] text-center">
         <h2 class="text-[29px] mb-[10px] font-bold" :style="{ color: '#074A5D' }">Lengkapi Data Diri Anda</h2>
@@ -78,7 +78,7 @@ import mosqueBackground from "@/assets/mosque-background.png";
 import axios from "axios";
 import babyImage from "@/assets/baby.jpg";
 import dokterImage from "@/assets/dokter.png";
-import logoImage from "@/assets/logo.png";
+import logoImage from "@/assets/logo2.png";
 import informIcon from "@/assets/inform.svg";
 import SuccessAlert from "@/components/SuccessAlert.vue";
 

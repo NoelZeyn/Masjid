@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Acara;
 
 use App\Http\Controllers\Controller;
 use App\Models\Acara\Acara;
+use App\Models\Acara\KategoriAcara;
 use Illuminate\Http\Request;
 
 class AcaraController extends Controller
@@ -13,10 +14,19 @@ class AcaraController extends Controller
      */
     public function index()
     {
-        $acaras = Acara::all();
+        $acaras = Acara::with('kategori')->get();
         return response()->json([
             'message' => 'Semua data acara berhasil didapatkan',
             'data' => $acaras,
+        ], 200);
+    }
+
+    public function showKategori()
+    {
+        $kategori = KategoriAcara::all();
+        return response()->json([
+            'message' => 'Data kategori berhasil didapatkan',
+            'data' => $kategori,
         ], 200);
     }
 
@@ -29,6 +39,7 @@ class AcaraController extends Controller
             $validated = $request->validate([
                 'nama_acara' => 'required|string|max:255',
                 'deskripsi' => 'required|string',
+                'kategori_id' => 'required|exists:kategori_acara,id',
                 'tanggal_mulai' => 'required|date',
                 'tanggal_selesai' => 'required|date',
                 'lokasi' => 'required|string',
@@ -52,7 +63,7 @@ class AcaraController extends Controller
     public function show(string $id)
     {
         try {
-            $acaras = Acara::findOrFail($id);
+            $acaras = Acara::with('kategori')->findOrFail($id);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Data berita tidak ditemukan'], 404);
         }
@@ -71,6 +82,7 @@ class AcaraController extends Controller
             $validated = $request->validate([
                 'nama_acara' => 'required|string|max:255',
                 'deskripsi' => 'required|string',
+                'kategori_id' => 'required|exists:kategori_acara,id',
                 'tanggal_mulai' => 'required|date',
                 'tanggal_selesai' => 'required|date',
                 'lokasi' => 'required|string',

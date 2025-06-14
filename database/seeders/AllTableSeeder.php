@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Acara\KategoriAcara;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -265,11 +266,16 @@ class AllTableSeeder extends Seeder
 
         // Acara
         $kategory_infaq = ['zakat', 'kafarat', 'nazar', 'jihad', 'infaq_membantu', 'infaq_bencana', 'infaq_kemanusiaan', 'mubah', 'haram'];
-        for ($i = 0; $i < 10; $i++) {
+
+        foreach ($kategory_infaq as $kategori) {
+            KategoriAcara::firstOrCreate(['nama' => $kategori]);
+        }
+        $kategori_ids = KategoriAcara::pluck('id')->toArray();
+        for ($i = 0; $i < 100; $i++) {
             DB::table('acara')->insert([
                 'nama_acara' => 'Maulid Nabi',
                 'deskripsi' => 'Peringatan Maulid Nabi Muhammad SAW',
-                'kategori'=> $faker->randomElement($kategory_infaq),
+                'kategori_id' => $faker->randomElement($kategori_ids),
                 'tanggal_mulai' => now()->toDateString(),
                 'tanggal_selesai' => now()->addDays(1)->toDateString(),
                 'lokasi' => 'Aula Masjid',

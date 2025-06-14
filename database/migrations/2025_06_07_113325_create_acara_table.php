@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('nama_acara');
             $table->string('deskripsi')->nullable();
-            $table->string('kategori')->nullable();
+            $table->foreignId('kategori_id')
+                  ->constrained('kategori_acara')
+                  ->onDelete('cascade');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->string('lokasi');

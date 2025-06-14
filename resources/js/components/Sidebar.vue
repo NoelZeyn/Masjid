@@ -6,16 +6,16 @@
     </button>
 
     <!-- Sidebar -->
-    <aside :class="['transition-transform duration-300 z-[1000] fixed md:static top-0 left-0 h-screen w-[270px] bg-white border-r border-gray-200 pl-5 pt-5 flex flex-col gap-6', { '-translate-x-full': !isSidebarOpen && isMobile }]">
+    <aside :class="['transition-transform duration-300 z-[1000] fixed md:static top-0 left-0 min-h-screen w-[320px] bg-white border-r border-gray-200 pl-7 pt-7 flex flex-col gap-6', { '-translate-x-full': !isSidebarOpen && isMobile }]">
       <!-- Logo -->
       <div class="flex items-center gap-1 border-b border-gray-200 pb-2">
         <img :src="logoImage" alt="Logo" class="w-[35px] object-cover rounded-t-[10px] mt-[-5px]" />
-        <span class="text-[20px] text-[#08607a] font-['Protest_Strike']">MasjidCare</span>
+        <span class="logo-text text-[20px] font-bold text-[#08607a] font-['Protest_Strike']">MasjidCare</span>
       </div>
 
       <!-- Menu Utama -->
-      <div class="flex flex-col gap-2 -mt-4">
-        <p class="text-xs font-semibold text-[#b0b385] mb-1 ">Main Menu</p>
+      <div class="flex flex-col gap-2">
+        <p class="text-sm font-semibold text-[#b0b385] mb-1">Main Menu</p>
         <ul>
           <router-link v-if="role !== 'ss'" to="/dashboard" class="block">
             <li :class="menuClass('dashboard')">
@@ -30,10 +30,10 @@
             </li>
           </router-link>
           
-          <!-- <router-link v-if="role !== 'ss'" to="/inventaris" class="block">
-            <li :class="menuClass('inventaris')" @click="setActive('inventaris')">
-              <img src="@/assets/posko.svg" class="w-5" alt="inventaris" />
-              <span>Inventaris</span>
+          <router-link v-if="role !== 'ss'" to="/acara-dashboard" class="block">
+            <li :class="menuClass('acara')" @click="setActive('Acara')">
+              <img src="@/assets/posko.svg" class="w-5" alt="acara" />
+              <span>Acara</span>
             </li>
           </router-link>
           
@@ -51,13 +51,6 @@
             </li>
           </router-link>
 
-          <router-link v-if="role !== 'ss'" to="/acara" class="block">
-            <li :class="menuClass('acara')">
-              <img src="@/assets/data1.svg" class="w-5" alt="Acara" />
-              <span>Acara Masjid</span>
-            </li>
-          </router-link>
- -->
           <router-link v-if="role === 'Ketua'" to="/admin-verifikator" class="block">
             <li :class="menuClass('verifikasi')">
               <img src="@/assets/profil.svg" class="w-5" alt="Verifikasi" />
@@ -69,7 +62,7 @@
 
       <!-- Menu Admin -->
       <div class="flex flex-col gap-2">
-        <p class="text-xs font-semibold text-[#b0b385] mb-1">Admin</p>
+        <p class="text-sm font-semibold text-[#b0b385] mb-1">Admin</p>
         <ul>
           <router-link to="/profile" class="block">
             <li :class="menuClass('profile')">
@@ -168,3 +161,10 @@ export default {
 </script>
 
 
+<style scoped>
+.logo-text {
+    font-family: "Protest Strike", sans-serif;
+    font-size: 26px;
+    color: #08607a;
+}
+</style>

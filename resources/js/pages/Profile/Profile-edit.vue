@@ -1,9 +1,9 @@
 <template>
   <div class="flex min-h-[50vh] bg-gray-100">
     <Sidebar :activeMenu="activeMenu" @update:activeMenu="updateActiveMenu" />
-    <div class="flex-1 flex flex-col px-8 pt-3 bg-white">
-      <HeaderBar title="Edit Profil" />
-      <div class="my-1 border-b border-gray-300"></div>
+    <div class="flex-1 p-8 pt-4 bg-white">
+      <HeaderBar title="Edit Profile" class="mt-3"/>
+      <div class="my-4 border-b border-gray-300"></div>
 
       <div class="bg-white border border-gray-300 rounded-lg shadow mt-6">
         <div class="p-6">

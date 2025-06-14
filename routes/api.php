@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Acara\AcaraController;
 use App\Http\Controllers\Authentication\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
@@ -19,6 +20,10 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::get('profile', [ProfileController::class, 'showProfile']);
     Route::put('profile', [ProfileController::class, 'updateProfile']);
     Route::post('editPassword', [ProfileController::class, 'updatePassword']);
+});
+Route::group(['middleware' => 'api'], function ($router) {
+    Route::apiResource('acara', AcaraController::class);
+    Route::get('kategori', [AcaraController::class, 'showKategori']);
 });
 
 

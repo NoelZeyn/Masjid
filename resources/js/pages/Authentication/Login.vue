@@ -1,5 +1,5 @@
 <template>
-    <div class="flex h-screen flex-col md:flex-row">
+    <div class="flex min-h-screen flex-col md:flex-row">
         <!-- Left Side (Hidden on Mobile) -->
         <div class="hidden md:flex w-full md:w-2/5 text-white rounded-r-lg overflow-hidden bg-cover bg-center opacity-80"
             :style="{ backgroundImage: `url(${mosqueBackground})` }">
@@ -16,7 +16,7 @@
         <div class="w-full md:w-3/5 flex flex-col items-center pt-5 overflow-hidden">
             <div class="flex items-center gap-3 self-start ml-12 mb-10">
                 <img :src="logoImage" alt="Logo Image" class="w-[75px] rounded-t-lg object-cover" />
-                <span class="logo-text">MasjidCare</span>
+        <span class="logo-text text-[20px] font-bold text-[#08607a] font-['Protest_Strike']">MasjidCare</span>
             </div>
 
             <div class="flex flex-col items-center text-center mb-5 w-full max-w-md">
@@ -97,7 +97,7 @@
 <script>
 import mosqueBackground from "@/assets/mosque-background.png";
 import axios from "axios";
-import logoImage from "@/assets/logo.png";
+import logoImage from "@/assets/logo2.png";
 import googleLogo from "@/assets/Google.svg";
 import eyeIcon from "@/assets/eye.svg";
 import eyeOffIcon from "@/assets/eye-off.svg";
