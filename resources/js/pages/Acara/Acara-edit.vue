@@ -83,6 +83,7 @@
                             " maxlength="100" placeholder="Status (direncanakan, berjalan, selesai, dibatalkan)"
                             class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
+                    <SuccessAlert :visible="showSuccessAlert" :message="successMessage" />
 
                     <div class="flex justify-between items-center mt-6">
                         <router-link to="/acara">
@@ -107,6 +108,7 @@
 <script>
 import Sidebar from "@/components/Sidebar.vue";
 import HeaderBar from "@/components/HeaderBar.vue";
+import SuccessAlert from "@/components/SuccessAlert.vue";
 import axios from "axios";
 
 export default {
@@ -114,6 +116,7 @@ export default {
     components: {
         Sidebar,
         HeaderBar,
+        SuccessAlert,
     },
     data() {
         return {
@@ -129,6 +132,8 @@ export default {
                 waktu: "",
                 status: "",
             },
+            showSuccessAlert: false,
+            successMessage: "",
         };
     },
     mounted() {
@@ -206,9 +211,15 @@ export default {
                         Accept: "application/json",
                     },
                 })
-                .then(() => {
-                    alert("Acara berhasil diperbarui.");
-                    this.$router.push("/acara");
+                .then((response) => {
+                    this.successMessage = "Acara berhasil diperbarui";
+                    this.showSuccessAlert = true;
+                    setTimeout(() => {
+                        this.showSuccessAlert = false;
+                        this.$router.push({
+                            path: `/acara`,
+                        });
+                    }, 2500);
                 })
                 .catch((err) => {
                     alert("Gagal memperbarui acara.");
