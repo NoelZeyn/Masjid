@@ -39,7 +39,10 @@
 
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Tanggal</label>
-                        <input type="text" :value="tanggalFormatted" readonly
+                        <input type="date" v-model="formData.tanggal_mulai"
+                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                        <span> - </span>
+                        <input type="date" v-model="formData.tanggal_selesai"
                             class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
 
@@ -81,14 +84,22 @@
                             class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
 
-                    <div class="text-right mt-6">
+                    <div class="flex justify-between items-center mt-6">
+                        <router-link to="/acara">
+                            <button
+                                class="bg-[#074a5d] cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-[#063843] transition">
+                                Kembali
+                            </button>
+                        </router-link>
+
                         <button @click="updateAcara"
-                            class="bg-[#074a5d] text-white px-4 py-2 rounded-lg hover:bg-[#063843] transition">
+                            class="bg-[#074a5d] cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-[#063843] transition">
                             Simpan Perubahan
                         </button>
                     </div>
                 </div>
             </div>
+            <br></br>
         </div>
     </div>
 </template>
@@ -182,6 +193,12 @@ export default {
             const id = this.$route.params.id;
             const token = localStorage.getItem("token");
 
+            // Validasi tanggal
+            if (this.formData.tanggal_selesai < this.formData.tanggal_mulai) {
+                alert("Tanggal selesai tidak boleh lebih awal dari tanggal mulai.");
+                return;
+            }
+
             axios
                 .put(`http://localhost:8000/api/acara/${id}`, this.formData, {
                     headers: {
@@ -199,6 +216,7 @@ export default {
                 });
         },
         sanitizeInput(text) {
+            if (typeof text !== "string") return text;
             const div = document.createElement("div");
             div.textContent = text;
             return div.innerHTML;
@@ -208,23 +226,13 @@ export default {
 
             const format = (tgl) => {
                 const date = new Date(tgl);
-                return {
-                    day: String(date.getDate()).padStart(2, "0"),
-                    month: date.toLocaleString("id-ID", { month: "long" }),
-                    year: date.getFullYear(),
-                };
+                const day = String(date.getDate()).padStart(2, "0");
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
             };
 
-            const start = format(tglMulai);
-            const end = format(tglSelesai);
-
-            if (start.month === end.month && start.year === end.year) {
-                return `${start.day} - ${end.day} ${end.month} ${end.year}`;
-            }
-            if (start.year === end.year) {
-                return `${start.day} ${start.month} - ${end.day} ${end.month} ${end.year}`;
-            }
-            return `${start.day} ${start.month} ${start.year} - ${end.day} ${end.month} ${end.year}`;
+            return `${format(tglMulai)} - ${format(tglSelesai)}`;
         },
         formatKategoriName(nama) {
             return nama.charAt(0).toUpperCase() + nama.slice(1);

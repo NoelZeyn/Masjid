@@ -265,52 +265,70 @@ class AllTableSeeder extends Seeder
         }
 
         // Acara
-        $kategory_infaq = ['zakat', 'kafarat', 'nazar', 'jihad', 'infaq_membantu', 'infaq_bencana', 'infaq_kemanusiaan', 'mubah', 'haram'];
+      $faker = Faker::create('id_ID');
 
-        foreach ($kategory_infaq as $kategori) {
+        // 1. Seed Kategori Acara
+        $kategori_infaq = [
+            'zakat', 'kafarat', 'nazar', 'jihad',
+            'infaq_membantu', 'infaq_bencana', 'infaq_kemanusiaan',
+            'mubah', 'haram'
+        ];
+
+        foreach ($kategori_infaq as $kategori) {
             KategoriAcara::firstOrCreate(['nama' => $kategori]);
         }
+
         $kategori_ids = KategoriAcara::pluck('id')->toArray();
+
+        // 2. Seed 100 Acara
         for ($i = 0; $i < 100; $i++) {
             DB::table('acara')->insert([
-                'nama_acara' => 'Maulid Nabi',
-                'deskripsi' => 'Peringatan Maulid Nabi Muhammad SAW',
+                'nama_acara' => $faker->randomElement([
+                    'Maulid Nabi', 'Isra Mi’raj', 'Kajian Islam', 'Bakti Sosial', 'Buka Bersama'
+                ]),
+                'deskripsi' => $faker->sentence(6),
                 'kategori_id' => $faker->randomElement($kategori_ids),
-                'tanggal_mulai' => now()->toDateString(),
-                'tanggal_selesai' => now()->addDays(1)->toDateString(),
-                'lokasi' => 'Aula Masjid',
-                'waktu' => '19:00',
+                'tanggal_mulai' => $faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d'),
+                'tanggal_selesai' => now()->addDays(rand(1, 3))->format('Y-m-d'),
+                'lokasi' => $faker->randomElement(['Aula Masjid', 'Halaman Masjid', 'Balai Warga']),
+                'waktu' => $faker->time('H:i'),
                 'status' => 'direncanakan',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
 
-        // Peserta Acara
+        // 3. Ambil data acara & warga
         $acaras = DB::table('acara')->get();
+        $wargas = DB::table('warga')->get(); // Pastikan tabel & data warga tersedia
+
+        // 4. Peserta Acara
         foreach ($acaras as $acara) {
-            foreach ($wargas as $warga) {
+            foreach ($wargas->random(min(10, $wargas->count())) as $warga) {
                 DB::table('peserta_acara')->insert([
                     'acara_id_fk' => $acara->id,
                     'warga_id_fk' => $warga->id,
-                    'status_kehadiran' => 'belum_konfirmasi',
+                    'status_kehadiran' => $faker->randomElement(['hadir', 'tidak_hadir', 'belum_konfirmasi']),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
             }
         }
 
-        // Dokumentasi Acara
+        // 5. Dokumentasi Acara
         foreach ($acaras as $acara) {
             DB::table('dokumentasi_acara')->insert([
                 'acara_id_fk' => $acara->id,
                 'tipe' => 'foto',
+                'file_path' => 'contoh/foto.jpg',
+                'link' => null,
                 'catatan' => 'Foto pembukaan acara',
-                'uploaded_at' => now()->toDateString(),
+                'uploaded_at' => now()->format('Y-m-d'),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
+
 
         // Keuangan
         foreach ($admins as $admin) {

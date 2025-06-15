@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Acara\AcaraController;
+use App\Http\Controllers\Acara\DokumentasiAcaraController;
 use App\Http\Controllers\Authentication\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
 Route::group(['middleware' => 'api'], function ($router) {
     Route::post('register', [AdminController::class, 'register']);
     Route::post('login', [AdminController::class, 'login']);
@@ -23,6 +25,12 @@ Route::group(['middleware' => 'api'], function ($router) {
 });
 Route::group(['middleware' => 'api'], function ($router) {
     Route::apiResource('acara', AcaraController::class);
+    Route::get('search', [AcaraController::class, 'searchAcara']);
+    Route::get('kategori', [AcaraController::class, 'showKategori']);
+});
+Route::group(['middleware' => 'api'], function ($router) {
+    Route::apiResource('dokumentasi-acara', DokumentasiAcaraController::class);
+    Route::get('search-dokumentasi', [DokumentasiAcaraController::class, 'searchDokumentasiAcara']);
     Route::get('kategori', [AcaraController::class, 'showKategori']);
 });
 

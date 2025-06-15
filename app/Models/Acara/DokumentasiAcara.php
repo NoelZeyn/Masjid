@@ -10,6 +10,8 @@ class DokumentasiAcara extends Model
 
     protected $fillable = [
         'acara_id_fk',
+        'file_path',
+        'link',
         'tipe',
         'catatan',
         'uploaded_at',
@@ -17,6 +19,6 @@ class DokumentasiAcara extends Model
 
     public function acara()
     {
-        return $this->belongsTo(Acara::class, 'acara_id_fk');
+        return $this->belongsTo(Acara::class, 'acara_id_fk')->with('kategori');
     }
 }

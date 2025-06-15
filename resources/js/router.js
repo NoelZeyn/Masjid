@@ -15,45 +15,67 @@ import AcaraInfo from "./pages/Acara/Acara-info.vue";
 import AcaraDashboard from "./pages/Acara/AcaraDashboard.vue";
 import AcaraEdit from "./pages/Acara/Acara-edit.vue";
 import AcaraAdd from "./pages/Acara/Acara-add.vue";
+import DokumentasiAcara from "./pages/Acara/DokumentasiAcara.vue";
+import DokumentasiAcaraDetail from "./pages/Acara/DokumentasiAcara-info.vue";
+import DokumentasiAcaraEdit from "./pages/Acara/DokumentasiAcara-edit.vue";
 
 // Fungsi validasi token
 const isTokenValid = () => {
     const token = localStorage.getItem("token");
     const expiry = localStorage.getItem("token_expiry");
-    return token && expiry && Date.now() < parseInt(expiry);
+
+    // Jika token atau expiry tidak ada
+    if (!token || !expiry) {
+        localStorage.clear();
+        sessionStorage.clear();
+        return false;
+    }
+
+    // Jika waktu sudah habis
+    if (Date.now() >= parseInt(expiry)) {
+        localStorage.clear();
+        sessionStorage.clear();
+        return false;
+    }
+
+    return true;
 };
 
-// Daftar route dengan pemisahan yang memerlukan token dan yang tidak
+
+// Daftar route
 const routes = [
-    // Public routes (Tidak memerlukan token)
-    { path: "/", redirect: "/register",meta: { title: "Register" } },
+    // Public routes (tidak butuh token)
+    { path: "/", redirect: "/register", meta: { title: "Register" } },
     { path: "/login", component: Login, meta: { title: "Login" } },
     { path: "/register", component: Register, meta: { title: "Register" } },
-    { path: "/feature", name: "Feature", component: Feature, meta: { title: "Feature" } },
-    { path: "/profile", name: "Profile", component: Profile, meta: { title: "Profile" } },
-    { path: "/profile-edit", name: "ProfileEdit", component: ProfileEdit, meta: { title: "Profile Edit" } },
-    { path: "/acara-dashboard", name: "AcaraDashboard", component: AcaraDashboard, meta: { title: "Acara Dashboard" } },
-    { path: "/acara", name: "Acara", component: Acara, meta: { title: "Acara" } },
-    { path: "/acara-add", name: "AcaraAdd", component: AcaraAdd, meta: { title: "Acara Add" } },
-    { path: "/acara-informasi/:id", name: "AcaraInfo", component: AcaraInfo, meta: { title: "Acara Informasi" } },
-    { path: "/acara-edit/:id", name: "AcaraEdit", component: AcaraEdit, meta: { title: "Acara Edit" } },
-    {
-        path: "/register-next",
-        component: RegisterNext,
-        meta: { title: "RegisterNext" },
-    },
-    {path: "/loginTransition", component: LoginTransition, meta: { title: "Login Transition" }},
-    { path: "/dashboard", component: Dashboard, meta: { title: "Dashboard" } },
-    { path: "/ubah-password", component: UbahPassword, meta: { title: "Password Change" } },
+    { path: "/register-next", component: RegisterNext, meta: { title: "RegisterNext" } },
+    { path: "/loginTransition", component: LoginTransition, meta: { title: "Login Transition" } },
+
+    // Protected routes (butuh token)
+    { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true, title: "Dashboard" } },
+    { path: "/feature", name: "Feature", component: Feature, meta: { requiresAuth: true, title: "Feature" } },
+    { path: "/profile", name: "Profile", component: Profile, meta: { requiresAuth: true, title: "Profile" } },
+    { path: "/profile-edit", name: "ProfileEdit", component: ProfileEdit, meta: { requiresAuth: true, title: "Profile Edit" } },
+    { path: "/ubah-password", component: UbahPassword, meta: { requiresAuth: true, title: "Password Change" } },
+
+    { path: "/acara-dashboard", name: "AcaraDashboard", component: AcaraDashboard, meta: { requiresAuth: true, title: "Acara Dashboard" } },
+    { path: "/acara", name: "Acara", component: Acara, meta: { requiresAuth: true, title: "Acara" } },
+    { path: "/acara-add", name: "AcaraAdd", component: AcaraAdd, meta: { requiresAuth: true, title: "Acara Add" } },
+    { path: "/acara-informasi/:id", name: "AcaraInfo", component: AcaraInfo, meta: { requiresAuth: true, title: "Acara Informasi" } },
+    { path: "/acara-edit/:id", name: "AcaraEdit", component: AcaraEdit, meta: { requiresAuth: true, title: "Acara Edit" } },
+
+    { path: "/dokumentasi-acara", name: "DokumentasiAcara", component: DokumentasiAcara, meta: { requiresAuth: true, title: "Dokumentasi Acara" } },
+    { path: "/dokumentasi-acara-informasi/:id", name: "DokumentasiAcaraDetail", component: DokumentasiAcaraDetail, meta: { requiresAuth: true, title: "Dokumentasi Acara Detail" } },
+    { path: "/dokumentasi-acara-edit/:id", name: "DokumentasiAcaraEdit", component: DokumentasiAcaraEdit, meta: { requiresAuth: true, title: "Dokumentasi Acara Edit" } },
 ];
 
-// Membuat router dengan history mode
+// Membuat router
 const router = createRouter({
     history: createWebHistory(),
     routes,
 });
 
-// Middleware untuk memastikan token validasi sebelum melanjutkan
+// Middleware validasi token
 router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && !isTokenValid()) {
         next("/login");
@@ -62,7 +84,7 @@ router.beforeEach((to, from, next) => {
     }
 });
 
-// Set judul halaman jika tersedia di meta
+// Set judul halaman
 router.afterEach((to) => {
     if (to.meta?.title) {
         document.title = to.meta.title;

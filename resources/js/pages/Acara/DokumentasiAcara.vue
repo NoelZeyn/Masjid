@@ -2,7 +2,7 @@
     <div class="flex h-screen bg-gray-100">
         <Sidebar :activeMenu="activeMenu" @update:activeMenu="updateActiveMenu" />
         <div class="flex-1 p-8 pt-4 bg-white">
-            <HeaderBar title="Acara" class="mt-3" />
+            <HeaderBar title="Dokumentasi Acara" class="mt-3" />
             <div class="my-4 border-b border-gray-300"></div>
 
             <div class="pb-12">
@@ -10,28 +10,6 @@
                 <div class="filters space-y-4">
                     <!-- Group Dropdown -->
                     <div class="flex flex-wrap gap-4 w-full">
-                        <!-- Dropdown Kategori -->
-                        <div class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md bg-white relative flex-1 cursor-pointer"
-                            @click="toggleDropdown('kategori')">
-                            <img src="@/assets/posko.svg" alt="Kategori" class="w-5 h-5" />
-                            <span class="flex-1 text-sm text-gray-500 truncate">
-                                {{ selectedKategori || "Pilih Kategori Acara" }}
-                            </span>
-                            <img src="@/assets/arrow-down.svg" alt="arrow"
-                                class="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2" />
-                            <ul v-show="dropdownOpen === 'kategori'"
-                                class="text-gray-500 absolute top-full mt-1 left-0 w-full max-h-70 overflow-y-auto border border-gray-300 rounded-md bg-white shadow z-10 text-sm scroll-smooth">
-                                <li @click.stop="selectOption('kategori', '')"
-                                    class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                                    <em>Hilangkan Filter Kategori</em>
-                                </li>
-                                <li v-for="kategori in kategoriOptions" :key="kategori.id" @click.stop="
-                                    selectOption('kategori', kategori.nama)
-                                    " class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                                    {{ kategori.nama }}
-                                </li>
-                            </ul>
-                        </div>
 
                         <!-- Dropdown Bulan -->
                         <div class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md bg-white relative flex-1 cursor-pointer"
@@ -92,11 +70,11 @@
                 <div class="bg-white rounded-lg shadow border border-gray-300 mt-8 overflow-hidden">
                     <div class="flex justify-between items-center px-5 p-3 border-b border-gray-300">
                         <h3 class="text-sm font-semibold text-gray-900">
-                            Data Acara Masjid
+                            Data Dokumentasi Acara Masjid
                         </h3>
                         <router-link to="/acara-add"
                             class="text-sm font-semibold text-[#074a5d] no-underline hover:text-[#0066cc] hover:no-underline">
-                            Tambah Acara
+                            Tambah Dokumentasi Acara
                         </router-link>
                     </div>
 
@@ -105,49 +83,39 @@
                             <tr>
                                 <th class="w-16">No</th>
                                 <th>Tanggal</th>
-                                <th>Waktu</th>
-                                <th>Kategori</th>
                                 <th>Nama Acara</th>
                                 <th>Lokasi</th>
+                                <th>Tipe</th>
+                                <th>Tanggal Upload</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(news, index) in paginatedAcaraList" :key="index" class="text-[#333436]">
-                                <td>
-                                    {{
-                                        (currentPage - 1) * itemsPerPage +
-                                        index +
-                                        1
-                                    }}
-                                </td>
-                                <td>
-                                    {{ formatTanggalRange(
-                                            news.tanggal_mulai,
-                                            news.tanggal_selesai
-                                        )
-                                    }}
-                                </td>
-                                <td>{{ news.waktu }}</td>
-                                <td>{{ news.kategori.nama }}</td>
-                                <td>{{ news.nama_acara }}</td>
-                                <td>{{ news.lokasi }}</td>
+                            <tr v-for="(dokumentasi, index) in paginatedAcaraList" :key="dokumentasi.id"
+                                class="text-[#333436]">
+                                <td>{{ index + 1 + (currentPage - 1) * itemsPerPage }}</td>
+                                <td>{{ formatTanggalRange(dokumentasi.acara.tanggal_mulai,
+                                    dokumentasi.acara.tanggal_selesai) }}</td>
+                                <td>{{ dokumentasi.acara.nama_acara }}</td>
+                                <td>{{ dokumentasi.acara.lokasi }}</td>
+                                <td>{{ dokumentasi.tipe }}</td>
+                                <td>{{ formatTanggalUpload(dokumentasi.uploaded_at) }}</td>
                                 <td>
                                     <div class="flex items-center space-x-2 justify-center">
-                                        <button title="Informasi" @click="
-                                            navigateTo('informasi', news)
-                                            " class="hover:opacity-70 border-r-1 pr-2 cursor-pointer">
-                                            <img :src="informasiIcon" alt="Informasi" class="w-5 h-5 object-contain" />
+                                        <button title="Detail" @click="navigateTo('informasi', dokumentasi)"
+                                            class="hover:opacity-70 border-r-1 pr-2 cursor-pointer">
+                                            <img :src="informasiIcon" alt="Detail" class="w-5 h-5 object-contain" />
                                         </button>
-                                        <button title="Edit" @click="navigateTo('edit', news)"
+                                        <button title="Edit" @click="navigateTo('edit', dokumentasi)"
                                             class="hover:opacity-70 border-r-1 pr-2 cursor-pointer">
                                             <img :src="updateIcon" alt="Update" class="w-5 h-5 object-contain" />
                                         </button>
-                                        <button title="Hapus" @click="confirmDelete(news)"
+                                        <button title="Hapus" @click="confirmDelete(dokumentasi)"
                                             class="hover:opacity-70 cursor-pointer">
                                             <img :src="deleteIcon" alt="Delete" class="w-5 h-5 object-contain" />
                                         </button>
                                     </div>
+
                                 </td>
                             </tr>
                         </tbody>
@@ -157,13 +125,13 @@
                     <div
                         class="flex justify-between items-center px-4 py-3 border-t border-gray-300 text-sm text-[#333436]">
                         <button @click="prevPage" :disabled="currentPage === 1"
-                            class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
+                            class="cursor-pointer px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
                             Prev
                         </button>
                         <span>Halaman {{ currentPage }} dari
                             {{ totalPages }}</span>
                         <button @click="nextPage" :disabled="currentPage === totalPages"
-                            class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
+                            class="cursor-pointer px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
                             Next
                         </button>
                     </div>
@@ -188,7 +156,7 @@ import deleteIcon from "@/assets/Delete.svg";
 import axios from "axios";
 
 export default {
-    name: "DataAcara",
+    name: "dataDokumentasiAcara",
     components: { Sidebar, HeaderBar, ModalConfirm, SuccessAlert },
 
     data() {
@@ -201,24 +169,12 @@ export default {
             debouncedSearch: null,
 
             acaraList: [],
-            kategoriOptions: [],
             selectedBulan: "",
             selectedTahun: "",
-            selectedKategori: "",
 
             bulanOptions: [
-                "Januari",
-                "Februari",
-                "Maret",
-                "April",
-                "Mei",
-                "Juni",
-                "Juli",
-                "Agustus",
-                "September",
-                "Oktober",
-                "November",
-                "Desember",
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
             ],
             tahunOptions: [],
 
@@ -246,18 +202,17 @@ export default {
     created() {
         this.debouncedSearch = this.debounce(this.searchAcara, 500);
         this.fetchLaporanAcara();
-        this.fetchKategori();
         this.generateTahunOptions();
     },
 
     methods: {
-        // 🔍 FILTER / SEARCH
+        // FILTER / SEARCH
         onInputSearch() {
             this.debouncedSearch();
         },
         searchAcara() {
             const token = localStorage.getItem("token");
-            let url = "http://localhost:8000/api/search?";
+            let url = "http://localhost:8000/api/search-dokumentasi?";
 
             if (this.searchQuery)
                 url += `nama=${encodeURIComponent(this.searchQuery)}&`;
@@ -265,8 +220,6 @@ export default {
                 url += `bulan=${encodeURIComponent(this.selectedBulan)}&`;
             if (this.selectedTahun)
                 url += `tahun=${encodeURIComponent(this.selectedTahun)}&`;
-            if (this.selectedKategori)
-                url += `kategori=${encodeURIComponent(this.selectedKategori)}&`;
 
             url = url.endsWith("&") ? url.slice(0, -1) : url;
 
@@ -287,53 +240,44 @@ export default {
         selectOption(type, value) {
             if (type === "bulan") this.selectedBulan = value;
             if (type === "tahun") this.selectedTahun = value;
-            if (type === "kategori") this.selectedKategori = value;
             this.dropdownOpen = null;
             this.searchAcara();
         },
-
-        // 📦 FETCH DATA
-        async fetchLaporanAcara() {
+        async fetchKategori() {
+            const token = localStorage.getItem("token");
             try {
-                const token = localStorage.getItem("token");
-                if (!token) throw new Error("Token tidak ditemukan");
-                const res = await axios.get("http://localhost:8000/api/acara", {
+                const res = await axios.get("http://localhost:8000/api/kategori", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                this.acaraList = res.data.data.sort(
-                    (a, b) => new Date(b.tanggal) - new Date(a.tanggal)
-                );
-            } catch (err) {
-                console.error("Gagal mengambil data:", err);
-            }
-        },
-        async fetchKategori() {
-            try {
-                const token = localStorage.getItem("token");
-                if (!token) throw new Error("Token tidak ditemukan");
-                const res = await axios.get(
-                    "http://localhost:8000/api/kategori",
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                this.kategoriOptions = res.data.data;
+
+                if (res.data && res.data.data) {
+                    this.kategoriOptions = res.data.data;
+                }
             } catch (err) {
                 console.error("Gagal mengambil kategori:", err);
             }
         },
+
+        // FETCH
+        async fetchLaporanAcara() {
+            try {
+                const token = localStorage.getItem("token");
+                const res = await axios.get("http://localhost:8000/api/dokumentasi-acara", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                this.acaraList = res.data.data;
+            } catch (err) {
+                console.error("Gagal mengambil dokumentasi acara:", err);
+            }
+        },
         generateTahunOptions() {
             const currentYear = new Date().getFullYear();
-            for (
-                let year = currentYear + 50;
-                year >= currentYear - 50;
-                year--
-            ) {
+            for (let year = currentYear + 50; year >= currentYear - 50; year--) {
                 this.tahunOptions.push(year.toString());
             }
         },
 
-        // 📅 FORMAT
+        // FORMAT
         formatTanggalRange(tglMulai, tglSelesai) {
             const format = (tgl) => {
                 const date = new Date(tgl);
@@ -354,8 +298,15 @@ export default {
                 return `${start.day} ${start.month} ${start.year} - ${end.day} ${end.month} ${end.year}`;
             }
         },
+        formatTanggalUpload(date) {
+            return new Date(date).toLocaleDateString("id-ID", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+            });
+        },
 
-        // 🧰 UTILITY
+        // UTILITY
         debounce(func, wait) {
             let timeout;
             return (...args) => {
@@ -371,14 +322,14 @@ export default {
         updateActiveMenu(menu) {
             this.activeMenu = menu;
         },
-        navigateTo(action, acara) {
-            localStorage.setItem(`dataAcara${action}`, JSON.stringify(acara));
-            this.$router.push(`/acara-${action}/${acara.id}`);
-        },
+navigateTo(action, dokumentasi) {
+    localStorage.setItem(`dataDokumentasiAcara${action}`, JSON.stringify(dokumentasi));
+    this.$router.push(`/dokumentasi-acara-${action}/${dokumentasi.id}`);
+},
 
-        // ❌ DELETE
-        confirmDelete(acara) {
-            this.acaraToDelete = acara;
+        // DELETE
+        confirmDelete(item) {
+            this.acaraToDelete = item;
             this.showModal = true;
         },
         cancelDelete() {
@@ -388,24 +339,21 @@ export default {
         async deleteAcara() {
             try {
                 const token = localStorage.getItem("token");
-                await axios.delete(
-                    `http://localhost:8000/api/acara/${this.acaraToDelete.id}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                this.successMessage = "Acara berhasil dihapus!";
+                await axios.delete(`http://localhost:8000/api/dokumentasi-acara/${this.acaraToDelete.id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                this.successMessage = "Dokumentasi acara berhasil dihapus!";
                 this.showSuccessAlert = true;
                 setTimeout(() => (this.showSuccessAlert = false), 2000);
                 this.fetchLaporanAcara();
             } catch (err) {
-                console.error("Gagal menghapus acara:", err);
+                console.error("Gagal menghapus dokumentasi acara:", err);
             } finally {
                 this.cancelDelete();
             }
         },
 
-        // ⏮️ PAGINATION
+        // PAGINATION
         nextPage() {
             if (this.currentPage < this.totalPages) this.currentPage++;
         },
@@ -415,6 +363,7 @@ export default {
     },
 };
 </script>
+
 
 <style scoped>
 th,

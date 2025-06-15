@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class AcaraController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
      */
@@ -20,6 +21,68 @@ class AcaraController extends Controller
             'data' => $acaras,
         ], 200);
     }
+
+    public function searchAcara(Request $request)
+    {
+        try {
+            $query = Acara::with('kategori');
+
+            if ($request->filled('kategori')) {
+                $kategori = $request->kategori;
+                $query->whereHas('kategori', function ($q) use ($kategori) {
+                    $q->where('nama', 'like', '%' . $kategori . '%');
+                });
+            }
+
+            if ($request->filled('nama')) {
+                $query->where('nama_acara', 'like', '%' . $request->nama . '%');
+            }
+
+            if ($request->filled('bulan')) {
+                $bulan = $this->convertBulanToNumber($request->bulan);
+                if ($bulan) {
+                    $query->whereMonth('tanggal_mulai', $bulan);
+                }
+            }
+
+            if ($request->filled('tahun')) {
+                $query->whereYear('tanggal_mulai', $request->tahun);
+            }
+
+            $results = $query->get();
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => $results->isEmpty() ? 'Data tidak ditemukan.' : 'Data berhasil dicari.',
+                'data'    => $results
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Terjadi kesalahan saat mencari acara: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    private function convertBulanToNumber($bulan)
+    {
+        $map = [
+            'Januari'   => 1,
+            'Februari'  => 2,
+            'Maret'     => 3,
+            'April'     => 4,
+            'Mei'       => 5,
+            'Juni'      => 6,
+            'Juli'      => 7,
+            'Agustus'   => 8,
+            'September' => 9,
+            'Oktober'   => 10,
+            'November'  => 11,
+            'Desember'  => 12
+        ];
+
+        return $map[$bulan] ?? null;
+    }
+
 
     public function showKategori()
     {
@@ -43,17 +106,20 @@ class AcaraController extends Controller
                 'tanggal_mulai' => 'required|date',
                 'tanggal_selesai' => 'required|date',
                 'lokasi' => 'required|string',
-                'waktu' => 'required|string|regex:/\d{2}:\d{2} WIB/',
+                'waktu' => 'required|string',
                 'status' => 'required|string|in:direncanakan,berjalan,selesai,dibatalkan'
             ]);
 
-            $acaras = Acara::create($$validated);
+            $acaras = Acara::create($validated);
             return response()->json([
-                'message' => 'Data acara berhasil dimasukkan',
+                'message' => 'Data acara berhasil ditambahkan',
                 'data' => $acaras,
             ], 200);
         } catch (\Throwable $th) {
-            return response()->json(['message' => 'Data berita gagal ditambahkan'], 404);
+            return response()->json([
+                'message' => 'Data berita gagal ditambahkan',
+                'error'=>$th->getMessage()
+            ], 404);
         }
     }
 
@@ -86,7 +152,7 @@ class AcaraController extends Controller
                 'tanggal_mulai' => 'required|date',
                 'tanggal_selesai' => 'required|date',
                 'lokasi' => 'required|string',
-                'waktu' => 'required|string|regex:/\d{2}:\d{2} WIB/',
+                'waktu' => 'required|string',
                 'status' => 'required|string|in:direncanakan,berjalan,selesai,dibatalkan'
             ]);
 
