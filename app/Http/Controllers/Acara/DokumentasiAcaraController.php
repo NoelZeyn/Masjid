@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Acara;
 use App\Http\Controllers\Controller;
 use App\Models\Acara\DokumentasiAcara;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class DokumentasiAcaraController extends Controller
@@ -127,22 +128,28 @@ class DokumentasiAcaraController extends Controller
 
         return $map[$bulan] ?? null;
     }
-    public function show(string $id)
-    {
-        try {
-            $dokumentasi = DokumentasiAcara::with('acara')->findOrFail($id);
+public function show(string $id)
+{
+    try {
+        $dokumentasi = DokumentasiAcara::with('acara')->findOrFail($id);
 
-            return response()->json([
-                'message' => 'Data dokumentasi acara berhasil didapatkan',
-                'data'    => $dokumentasi,
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Data dokumentasi acara tidak ditemukan',
-                'error'   => $th->getMessage(),
-            ], 404);
-        }
+        // Jika file_path ada, buat URL lengkap ke file
+        $dokumentasi->file_url = $dokumentasi->file_path 
+            ? url('storage/' . $dokumentasi->file_path)
+            : null;
+
+        return response()->json([
+            'message' => 'Data dokumentasi acara berhasil didapatkan',
+            'data'    => $dokumentasi,
+        ], 200);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'message' => 'Data dokumentasi acara tidak ditemukan',
+            'error'   => $th->getMessage(),
+        ], 404);
     }
+}
+
 
     /**
      * Memperbarui data dokumentasi acara.
@@ -153,19 +160,38 @@ class DokumentasiAcaraController extends Controller
             $validated = $request->validate([
                 'acara_id_fk' => 'required|exists:acara,id',
                 'tipe'        => 'required|in:foto,video,dokumen',
-                'file_path'   => 'nullable|string',
+                'file'        => 'nullable|file|mimes:jpg,jpeg,png,mp4,pdf,doc,docx|max:5120',
                 'link'        => 'nullable|url',
                 'catatan'     => 'nullable|string',
                 'uploaded_at' => 'nullable|date',
             ]);
 
+            $dokumentasi = DokumentasiAcara::findOrFail($id);
+
+            // Proses file jika ada
+            if ($request->hasFile('file')) {
+                // Hapus file lama jika ada
+                if ($dokumentasi->file_path && Storage::exists($dokumentasi->file_path)) {
+                    Storage::delete($dokumentasi->file_path);
+                }
+
+                $file = $request->file('file');
+                $path = $file->store('dokumentasi-acara', 'public');
+                $validated['file_path'] = $path;
+            }
+
+            // Validasi tambahan untuk dokumen
             if ($validated['tipe'] === 'dokumen' && empty($validated['file_path']) && empty($validated['link'])) {
                 return response()->json([
                     'message' => 'Dokumen harus memiliki file atau link.'
                 ], 422);
             }
 
-            $dokumentasi = DokumentasiAcara::findOrFail($id);
+            // Hapus file_path jika tipe bukan dokumen/foto
+            if ($validated['tipe'] === 'video') {
+                $validated['file_path'] = null;
+            }
+
             $dokumentasi->update($validated);
 
             return response()->json([
@@ -184,6 +210,7 @@ class DokumentasiAcaraController extends Controller
             ], 500);
         }
     }
+
 
     /**
      * Menghapus dokumentasi acara berdasarkan ID.

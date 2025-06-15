@@ -1,8 +1,7 @@
 <template>
     <div class="flex h-screen bg-gray-100">
         <Sidebar :activeMenu="activeMenu" @update:activeMenu="activeMenu = $event" />
-
-        <div class="flex-1 p-8 pt-7  flex flex-col bg-white">
+        <div class="flex-1 p-8 pt-7 flex flex-col bg-white">
             <HeaderBar title="Dokumentasi Acara" />
             <div class="border-b border-gray-300"></div>
 
@@ -21,66 +20,80 @@
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Judul Acara</label>
                         <input type="text" v-model="formData.nama_acara" readonly
-                            class="text-gray-700 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
 
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Tanggal</label>
                         <input type="text" :value="tanggalFormatted" readonly
-                            class="text-gray-700 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
 
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Kategori</label>
                         <input type="text" v-model="formData.kategori" readonly
-                            class="text-gray-700 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
 
                     <div class="flex items-center gap-5 mb-10">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Status</label>
                         <input type="text" v-model="formData.status" readonly
-                            class="text-gray-700 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
 
                     <div class="h-[1px] bg-gray-300 my-2"></div>
 
-                    <h4 class="text-[15px] font-medium text-black text-center pb-3">
-                        Dokumentasi
-                    </h4>
+                    <h4 class="text-[15px] font-medium text-black text-center pb-3">Dokumentasi</h4>
 
-                    <div v-if="dokumentasi" class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-4">
                         <div class="flex items-center gap-5">
                             <label class="min-w-[150px] font-semibold text-sm text-black">Tipe</label>
-                            <input type="text" :value="dokumentasi.tipe" readonly
-                                class="text-gray-700 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            <select v-model="dokumentasi.tipe" disabled
+                                class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm">
+                                <option value="foto">Foto</option>
+                                <option value="video">Video</option>
+                                <option value="dokumen">Dokumen</option>
+                            </select>
                         </div>
 
                         <div class="flex items-center gap-5">
                             <label class="min-w-[150px] font-semibold text-sm text-black">Tanggal Upload</label>
-                            <input type="text" :value="formatTanggalIndonesia(dokumentasi.uploaded_at)" readonly
-                                class="text-gray-700 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            <input type="date" v-model="dokumentasi.uploaded_at" readonly
+                                class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                         </div>
 
                         <div class="flex items-center gap-5">
                             <label class="min-w-[150px] font-semibold text-sm text-black">Catatan</label>
-                            <textarea :value="dokumentasi.catatan" readonly rows="3"
-                                class="text-gray-700 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm resize-none"></textarea>
+                            <textarea v-model="dokumentasi.catatan" rows="3" readonly
+                                class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm resize-none"></textarea>
                         </div>
 
-                        <div v-if="dokumentasi.tipe === 'foto' && dokumentasi.file_path"
-                            class="flex items-center gap-5">
-                            <label class="min-w-[150px] font-semibold text-sm text-black">Preview Foto</label>
-                            <img :src="`/storage/${dokumentasi.file_path}`" alt="Foto Dokumentasi"
-                                class="text-gray-700 rounded-lg shadow w-[300px] h-auto object-cover border" />
-                        </div>
-
-                        <div v-else-if="dokumentasi.link" class="flex items-center gap-5">
+                        <div class="flex items-center gap-5" v-if="['video', 'dokumen'].includes(dokumentasi.tipe)">
                             <label class="min-w-[150px] font-semibold text-sm text-black">Link</label>
-                            <a :href="dokumentasi.link" target="_blank" class="text-blue-600 underline text-sm">
-                                {{ dokumentasi.link }}
-                            </a>
+                            <input type="text" v-model="dokumentasi.link" readonly
+                                class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                        </div>
+
+                        <div v-if="dokumentasi.tipe === 'foto' && dokumentasi.file_path" class="flex items-center gap-5">
+                            <label class="min-w-[150px] font-semibold text-sm text-black">Preview Foto</label>
+                            <img :src="`/storage/${dokumentasi.file_path}`" alt="Preview"
+                                class="text-gray-500 rounded-lg shadow w-[300px] h-auto object-cover border" />
+                        </div>
+
+                        <div v-if="dokumentasi.tipe === 'dokumen' && dokumentasi.file_path"
+                            class="flex items-center gap-5">
+                            <label class="min-w-[150px] font-semibold text-sm text-black">Dokumen</label>
+                            <a :href="`/storage/${dokumentasi.file_path}`" target="_blank"
+                                class="text-gray-500 text-blue-600 underline text-sm">Lihat Dokumen</a>
+                        </div>
+
+                        <div v-if="dokumentasi.tipe === 'video' && dokumentasi.link" class="flex items-center gap-5">
+                            <label class="min-w-[150px] font-semibold text-sm text-black">Video</label>
+                            <iframe :src="dokumentasi.link"
+                                class="text-gray-500 w-[300px] h-[200px] border rounded-lg"></iframe>
                         </div>
                     </div>
+
                     <div class="flex justify-between items-center mt-6">
                         <router-link to="/dokumentasi-acara">
                             <button
@@ -91,7 +104,6 @@
                     </div>
                 </div>
             </div>
-            <br></br>
         </div>
     </div>
 </template>
@@ -117,7 +129,13 @@ export default {
                 tanggal_selesai: "",
                 status: "",
             },
-            dokumentasi: null,
+            dokumentasi: {
+                tipe: "foto",
+                file_path: "",
+                link: "",
+                catatan: "",
+                uploaded_at: "",
+            },
         };
     },
     mounted() {
@@ -125,16 +143,12 @@ export default {
     },
     computed: {
         tanggalFormatted() {
-            return this.formatTanggalRange(
-                this.formData.tanggal_mulai,
-                this.formData.tanggal_selesai
-            );
+            return this.formatTanggalRange(this.formData.tanggal_mulai, this.formData.tanggal_selesai);
         },
     },
     methods: {
         async fetchDokumentasi(id) {
             const token = localStorage.getItem("token");
-
             try {
                 const res = await axios.get(`http://localhost:8000/api/dokumentasi-acara/${id}`, {
                     headers: {
@@ -142,17 +156,15 @@ export default {
                         Accept: "application/json",
                     },
                 });
-
                 const data = res.data.data;
 
                 this.formData = {
                     nama_acara: data.acara?.nama_acara || "-",
-                    kategori: data.acara?.kategori?.nama || "-", // kalau relasi kategori sudah ada
+                    kategori: data.acara?.kategori?.nama || "-",
                     tanggal_mulai: data.acara?.tanggal_mulai || "-",
                     tanggal_selesai: data.acara?.tanggal_selesai || "-",
                     status: data.acara?.status || "-",
                 };
-
 
                 this.dokumentasi = {
                     tipe: data.tipe,
@@ -188,11 +200,6 @@ export default {
                 return `${start.day} ${start.month} - ${end.day} ${end.month} ${end.year}`;
             }
             return `${start.day} ${start.month} ${start.year} - ${end.day} ${end.month} ${end.year}`;
-        },
-        formatTanggalIndonesia(tanggal) {
-            if (!tanggal) return "-";
-            const options = { year: "numeric", month: "long", day: "numeric" };
-            return new Date(tanggal).toLocaleDateString("id-ID", options);
         },
     },
 };

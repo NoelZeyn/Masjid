@@ -1,7 +1,6 @@
 <template>
     <div class="flex h-screen bg-gray-100">
         <Sidebar :activeMenu="activeMenu" @update:activeMenu="activeMenu = $event" />
-
         <div class="flex-1 p-8 pt-7 flex flex-col bg-white">
             <HeaderBar title="Dokumentasi Acara" />
             <div class="border-b border-gray-300"></div>
@@ -44,43 +43,66 @@
 
                     <div class="h-[1px] bg-gray-300 my-2"></div>
 
-                    <h4 class="text-[15px] font-medium text-black text-center pb-3">
-                        Dokumentasi
-                    </h4>
+                    <h4 class="text-[15px] font-medium text-black text-center pb-3">Dokumentasi</h4>
 
-                    <div v-if="dokumentasi" class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-4">
                         <div class="flex items-center gap-5">
                             <label class="min-w-[150px] font-semibold text-sm text-black">Tipe</label>
-                            <input type="text" :value="dokumentasi.tipe"
-                                class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            <select v-model="dokumentasi.tipe"
+                                class="w-full p-2 border border-gray-300 rounded-lg bg-white text-sm">
+                                <option value="foto">Foto</option>
+                                <option value="video">Video</option>
+                                <option value="dokumen">Dokumen</option>
+                            </select>
                         </div>
 
                         <div class="flex items-center gap-5">
                             <label class="min-w-[150px] font-semibold text-sm text-black">Tanggal Upload</label>
-                            <input type="date" :value="dokumentasi.uploaded_at"
-                                class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            <input type="date" v-model="dokumentasi.uploaded_at"
+                                class="w-full p-2 border border-gray-300 rounded-lg bg-white text-sm" />
                         </div>
 
                         <div class="flex items-center gap-5">
                             <label class="min-w-[150px] font-semibold text-sm text-black">Catatan</label>
-                            <textarea :value="dokumentasi.catatan" rows="3"
-                                class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm resize-none"></textarea>
+                            <textarea v-model="dokumentasi.catatan" rows="3"
+                                class="w-full p-2 border border-gray-300 rounded-lg bg-white text-sm resize-none"></textarea>
                         </div>
 
+                        <div class="flex items-center gap-5" v-if="dokumentasi.tipe !== 'video'">
+                            <label class="min-w-[150px] font-semibold text-sm text-black">Upload File</label>
+                            <input type="file" @change="handleFileUpload"
+                                class="w-full p-2 border border-gray-300 rounded-lg bg-white text-sm" />
+                        </div>
+
+                        <div class="flex items-center gap-5" v-if="['video', 'dokumen'].includes(dokumentasi.tipe)">
+                            <label class="min-w-[150px] font-semibold text-sm text-black">Link</label>
+                            <input type="text" v-model="dokumentasi.link"
+                                class="w-full p-2 border border-gray-300 rounded-lg bg-white text-sm" />
+                        </div>
+
+                        <!-- Preview Foto -->
                         <div v-if="dokumentasi.tipe === 'foto' && dokumentasi.file_path"
                             class="flex items-center gap-5">
                             <label class="min-w-[150px] font-semibold text-sm text-black">Preview Foto</label>
-                            <img :src="`/storage/${dokumentasi.file_path}`" alt="Foto Dokumentasi"
+                            <img :src="`/storage/${dokumentasi.file_path}`" alt="Preview"
                                 class="rounded-lg shadow w-[300px] h-auto object-cover border" />
                         </div>
 
-                        <div v-else-if="dokumentasi.link" class="flex items-center gap-5">
-                            <label class="min-w-[150px] font-semibold text-sm text-black">Link</label>
-                            <a :href="dokumentasi.link" target="_blank" class="text-blue-600 underline text-sm">
-                                {{ dokumentasi.link }}
-                            </a>
+                        <!-- Preview Dokumen -->
+                        <div v-if="dokumentasi.tipe === 'dokumen' && dokumentasi.file_path"
+                            class="flex items-center gap-5">
+                            <label class="min-w-[150px] font-semibold text-sm text-black">Dokumen</label>
+                            <a :href="`/storage/${dokumentasi.file_path}`" target="_blank"
+                                class="text-blue-600 underline text-sm">Lihat Dokumen</a>
+                        </div>
+
+                        <!-- Preview Video -->
+                        <div v-if="dokumentasi.tipe === 'video' && dokumentasi.link" class="flex items-center gap-5">
+                            <label class="min-w-[150px] font-semibold text-sm text-black">Video</label>
+                            <iframe :src="dokumentasi.link" class="w-[300px] h-[200px] border rounded-lg"></iframe>
                         </div>
                     </div>
+                    <SuccessAlert :visible="showSuccessAlert" :message="successMessage" />
                     <div class="flex justify-between items-center mt-6">
                         <router-link to="/dokumentasi-acara">
                             <button
@@ -96,7 +118,6 @@
                     </div>
                 </div>
             </div>
-            <br></br>
         </div>
     </div>
 </template>
@@ -104,6 +125,7 @@
 <script>
 import Sidebar from "@/components/Sidebar.vue";
 import HeaderBar from "@/components/HeaderBar.vue";
+import SuccessAlert from "@/components/SuccessAlert.vue";
 import axios from "axios";
 
 export default {
@@ -111,6 +133,7 @@ export default {
     components: {
         Sidebar,
         HeaderBar,
+        SuccessAlert,
     },
     data() {
         return {
@@ -122,7 +145,16 @@ export default {
                 tanggal_selesai: "",
                 status: "",
             },
-            dokumentasi: null,
+            dokumentasi: {
+                tipe: "foto",
+                file_path: "",
+                link: "",
+                catatan: "",
+                uploaded_at: "",
+            },
+            selectedFile: null,
+            showSuccessAlert: false,
+            successMessage: "",
         };
     },
     mounted() {
@@ -137,39 +169,54 @@ export default {
         },
     },
     methods: {
+        handleFileUpload(event) {
+            this.selectedFile = event.target.files[0];
+        },
         async updateDokumentasi() {
             const token = localStorage.getItem("token");
+            const formData = new FormData();
+            formData.append('_method', 'PUT'); // <<< Ini WAJIB
+            formData.append("acara_id_fk", this.$route.params.id);
+            formData.append("tipe", this.dokumentasi.tipe);
+            formData.append("link", this.dokumentasi.link || "");
+            formData.append("catatan", this.dokumentasi.catatan || "");
+            formData.append("uploaded_at", this.dokumentasi.uploaded_at || "");
 
-            const payload = {
-                acara_id_fk: this.$route.params.id, // atau bisa ambil dari data.acara.id
-                tipe: this.dokumentasi.tipe,
-                file_path: this.dokumentasi.file_path,
-                link: this.dokumentasi.link,
-                catatan: this.dokumentasi.catatan,
-                uploaded_at: this.dokumentasi.uploaded_at,
-            };
+            if (this.selectedFile) {
+                formData.append("file", this.selectedFile);
+            }
 
             try {
-                const res = await axios.put(
+                const res = await axios.post(
                     `http://localhost:8000/api/dokumentasi-acara/${this.$route.params.id}`,
-                    payload,
+                    formData,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                             Accept: "application/json",
+                            "Content-Type": "multipart/form-data",
                         },
                     }
-                );
-
-                alert("Berhasil memperbarui dokumentasi!");
+                )
+                    .then((response) => {
+                        this.successMessage = "Dokumentasi berhasil diperbarui";
+                        this.showSuccessAlert = true;
+                        setTimeout(() => {
+                            this.showSuccessAlert = false;
+                            this.$router.push({
+                                path: `/dokumentasi-acara`,
+                            });
+                        }, 2500);
+                    })
+                    .catch((error) => {
+                        console.error(
+                            "Gagal menambahkan pemeriksaan:",
+                            error.response?.data || error.message
+                        );
+                    });
             } catch (error) {
-                if (error.response && error.response.data) {
-                    alert("Gagal memperbarui dokumentasi: " + error.response.data.message);
-                    console.error(error.response.data);
-                } else {
-                    alert("Terjadi kesalahan.");
-                    console.error(error);
-                }
+                alert("Gagal memperbarui dokumentasi.");
+                console.error(error);
             }
         },
         async fetchDokumentasi(id) {
@@ -187,12 +234,11 @@ export default {
 
                 this.formData = {
                     nama_acara: data.acara?.nama_acara || "-",
-                    kategori: data.acara?.kategori?.nama || "-", // kalau relasi kategori sudah ada
+                    kategori: data.acara?.kategori?.nama || "-",
                     tanggal_mulai: data.acara?.tanggal_mulai || "-",
                     tanggal_selesai: data.acara?.tanggal_selesai || "-",
                     status: data.acara?.status || "-",
                 };
-
 
                 this.dokumentasi = {
                     tipe: data.tipe,
@@ -228,11 +274,6 @@ export default {
                 return `${start.day} ${start.month} - ${end.day} ${end.month} ${end.year}`;
             }
             return `${start.day} ${start.month} ${start.year} - ${end.day} ${end.month} ${end.year}`;
-        },
-        formatTanggalIndonesia(tanggal) {
-            if (!tanggal) return "-";
-            const options = { year: "numeric", month: "long", day: "numeric" };
-            return new Date(tanggal).toLocaleDateString("id-ID", options);
         },
     },
 };
