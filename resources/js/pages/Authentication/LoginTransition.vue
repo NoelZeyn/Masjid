@@ -25,7 +25,7 @@ export default {
 
             try {
                 const userResponse = await fetch(
-                    `${apiUrl}/auth/user?email=${email}`,
+                    `${apiUrl}/user?email=${email}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
