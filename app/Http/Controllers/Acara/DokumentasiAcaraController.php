@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Acara;
-
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;
 use App\Models\Acara\DokumentasiAcara;
 use Illuminate\Http\Request;
@@ -56,6 +56,11 @@ class DokumentasiAcaraController extends Controller
                 'message' => 'Validasi gagal',
                 'errors'  => $e->errors(),
             ], 422);
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => 'Gagal menyimpan ke database',
+                'errors' => $e->getMessage(),
+            ], 500);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Terjadi kesalahan saat menambahkan dokumentasi',

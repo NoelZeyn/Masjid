@@ -18,6 +18,8 @@ import AcaraAdd from "./pages/Acara/Acara-add.vue";
 import DokumentasiAcara from "./pages/Acara/DokumentasiAcara.vue";
 import DokumentasiAcaraDetail from "./pages/Acara/DokumentasiAcara-info.vue";
 import DokumentasiAcaraEdit from "./pages/Acara/DokumentasiAcara-edit.vue";
+import DokumentasiAcaraAdd from "./pages/Acara/DokumentasiAcara-add.vue";
+import PesertaAcara from "./pages/Acara/PesertaAcara.vue";
 
 // Fungsi validasi token
 const isTokenValid = () => {
@@ -67,6 +69,12 @@ const routes = [
     { path: "/dokumentasi-acara", name: "DokumentasiAcara", component: DokumentasiAcara, meta: { requiresAuth: true, title: "Dokumentasi Acara" } },
     { path: "/dokumentasi-acara-informasi/:id", name: "DokumentasiAcaraDetail", component: DokumentasiAcaraDetail, meta: { requiresAuth: true, title: "Dokumentasi Acara Detail" } },
     { path: "/dokumentasi-acara-edit/:id", name: "DokumentasiAcaraEdit", component: DokumentasiAcaraEdit, meta: { requiresAuth: true, title: "Dokumentasi Acara Edit" } },
+    { path: "/dokumentasi-acara-add", name: "DokumentasiAcaraAdd", component: DokumentasiAcaraAdd, meta: { requiresAuth: true, title: "Dokumentasi Acara Add" } },
+
+    { path: "/peserta-acara", name: "Peserta", component: PesertaAcara, meta: { requiresAuth: true, title: "Peserta Acara" } },
+    { path: "/dokumentasi-acara-informasi/:id", name: "DokumentasiAcaraDetail", component: DokumentasiAcaraDetail, meta: { requiresAuth: true, title: "Dokumentasi Acara Detail" } },
+    { path: "/dokumentasi-acara-edit/:id", name: "DokumentasiAcaraEdit", component: DokumentasiAcaraEdit, meta: { requiresAuth: true, title: "Dokumentasi Acara Edit" } },
+    { path: "/dokumentasi-acara-add", name: "DokumentasiAcaraAdd", component: DokumentasiAcaraAdd, meta: { requiresAuth: true, title: "Dokumentasi Acara Add" } },
 ];
 
 // Membuat router
