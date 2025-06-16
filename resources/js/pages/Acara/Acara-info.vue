@@ -20,29 +20,29 @@
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Judul Acara</label>
                         <input type="text" v-model="formData.nama_acara" readonly placeholder="Judul Acara"
-                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Deskripsi</label>
                         <textarea v-model="formData.deskripsi" rows="4" readonly placeholder="Deskripsi Acara"
-                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm resize-y"></textarea>
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm resize-y"></textarea>
                     </div>
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Tanggal</label>
                         <input type="text" :value="tanggalFormatted" readonly
-                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
 
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Lokasi</label>
                         <input type="text" v-model="formData.lokasi" readonly placeholder="Tempat Pelaksanaan"
-                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Waktu</label>
                         <div class="flex items-center gap-2">
                             <input type="time" v-model="formData.waktu" readonly
-                                class="w-[100px] p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                                class="text-gray-500 w-[100px] p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                             <span>WIB</span>
                         </div>
                     </div>
@@ -50,13 +50,13 @@
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Kategori</label>
                         <input type="text" v-model="formData.kategori" readonly
-                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
 
                     <div class="flex items-center gap-5 mb-10">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Status</label>
                         <input type="text" v-model="formData.status" readonly placeholder="Tempat Pelaksanaan"
-                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                            class="text-gray-500 w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
                     </div>
                 </div>
                 <div class="flex justify-between items-center mt-6">

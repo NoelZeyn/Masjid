@@ -1,20 +1,33 @@
 <template>
-  <div v-if="visible" class="modal-overlay">
-    <div class="modal">
-      <!-- Menggunakan imported image dengan dynamic src binding -->
-      <img :src="ConfirmDelete" alt="Confirm Delete" class="modal-icon" />
-      <h3>{{ title }}</h3>
-      <p>{{ message }}</p>
-      <div class="modal-actions">
-        <button @click="$emit('cancel')" class="btn-cancel">Tidak</button>
-        <button @click="$emit('confirm')" class="btn-confirm">Ya</button>
+  <div v-if="visible"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.7)]">
+    <div
+      class="bg-white p-6 rounded-xl w-[90%] max-w-sm text-center max-h-[80vh] box-border border-[1px] border-[#08607A]">
+      <img :src="ConfirmDelete" alt="Confirm Delete"
+        class="w-12 h-12 mb-2 mx-auto md:w-9 md:h-9" />
+      <h3 class="text-lg font-semibold text-gray-800 mb-1">
+        {{ title }}
+      </h3>
+      <p class="text-sm text-gray-600">
+        {{ message }}
+      </p>
+      <div class="flex flex-col gap-3 mt-4">
+        <button @click="$emit('cancel')"
+          class="w-full py-2 px-4 text-sm rounded-full border-2 border-[#08607A] text-[#08607A] hover:bg-[#08607A] hover:text-white transition-all">
+          Tidak
+        </button>
+        <button @click="$emit('confirm')"
+          class="w-full py-2 px-4 text-sm rounded-full bg-[#08607A] text-white hover:opacity-90 transition-all">
+          Ya
+        </button>
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
-import ConfirmDelete from '@/assets/Confirm_delete.svg';  // Pastikan path sesuai dengan struktur folder kamu
+import ConfirmDelete from '@/assets/Confirm_delete.svg';
 
 export default {
   props: {
@@ -38,86 +51,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-.modal {
-  background: #fff;
-  padding: 16px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 320px;
-  text-align: center;
-  max-height: 80vh;
-  box-sizing: border-box;
-}
-
-.modal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.btn-cancel, .btn-confirm {
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  width: 100%;
-  font-size: 14px;
-  transition: all 0.2s ease-in-out;
-}
-
-.btn-cancel {
-  background: white;
-  border: 2px solid #08607A;
-  color: #08607A;
-}
-
-.btn-cancel:hover {
-  background: #08607A;
-  color: white;
-}
-
-.btn-confirm {
-  background: #08607A;
-  color: white;
-  border: none;
-}
-
-.modal-icon {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 10px;
-}
-
-/* Responsive tweaks */
-@media screen and (max-width: 768px) {
-  .modal {
-    width: 80%;
-    max-width: 95%;
-    padding: 9px;
-  }
-
-  .btn-cancel, .btn-confirm {
-    font-size: 14px;
-    padding: 10px 16px;
-  }
-
-  .modal-icon {
-    width: 36px;
-    height: 36px;
-  }
-}
-
-</style>

@@ -74,14 +74,21 @@
                                 {{ formatKategoriName(item.nama) }}
                             </option>
                         </select>
+
                     </div>
 
                     <div class="flex items-center gap-5">
                         <label class="min-w-[150px] font-semibold text-sm text-black">Status</label>
-                        <input type="text" v-model="formData.status" @input="
-                            formData.status = sanitizeInput(formData.status)
-                            " maxlength="100" placeholder="Status (direncanakan, berjalan, selesai, dibatalkan)"
-                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm" />
+                        <select v-model="formData.status"
+                            class="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-sm">
+                            <option value="">
+                                -- Pilih Kategori --
+                            </option>
+                            <option value="direncanakan">Direncanakan</option>
+                            <option value="berjalan">Berjalan</option>
+                            <option value="selesai">Selesai</option>
+                            <option value="dibatalkan">Dibatalkan</option>
+                        </select>
                     </div>
                     <SuccessAlert :visible="showSuccessAlert" :message="successMessage" />
 

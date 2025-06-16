@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Acara\Acara;
 use App\Models\Acara\KategoriAcara;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class AcaraController extends Controller
 {
@@ -115,6 +117,16 @@ class AcaraController extends Controller
                 'message' => 'Data acara berhasil ditambahkan',
                 'data' => $acaras,
             ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors'  => $e->errors(),
+            ], 422);
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => 'Gagal menyimpan ke database',
+                'errors' => $e->getMessage(),
+            ], 500);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Data berita gagal ditambahkan',
@@ -166,6 +178,16 @@ class AcaraController extends Controller
                 'message' => 'Data acara berhasil dimasukkan',
                 'data' => $acaras,
             ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors'  => $e->errors(),
+            ], 422);
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => 'Gagal menyimpan ke database',
+                'errors' => $e->getMessage(),
+            ], 500);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Terjadi kesalahan saat mengupdate data berita',
