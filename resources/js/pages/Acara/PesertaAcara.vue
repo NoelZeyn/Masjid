@@ -300,6 +300,28 @@ export default {
             this.pesertaAcaraToDelete = pesertaAcara;
             this.showModal = true;
         },
+        updateStatusKehadiran(pesertaAcara) {
+            const token = localStorage.getItem("token");
+            axios
+                .put(
+                    `http://localhost:8000/api/peserta-acara/${pesertaAcara.id}`,
+                    { 
+                        acara_id_fk: pesertaAcara.acara_id_fk,
+                        warga_id_fk: pesertaAcara.warga_id_fk,
+                        status_kehadiran: pesertaAcara.status_kehadiran 
+                    },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                )
+                .then(() => {
+                    this.successMessage = "Status kehadiran berhasil diperbarui!";
+                    this.showSuccessAlert = true;
+                    setTimeout(() => (this.showSuccessAlert = false), 2000);
+                    this.fetchLaporanPesertaAcara();
+                })
+                .catch((err) => {
+                    console.error("Gagal memperbarui status kehadiran:", err);
+                });
+        },
         cancelDelete() {
             this.showModal = false;
             this.pesertaAcaraToDelete = null;

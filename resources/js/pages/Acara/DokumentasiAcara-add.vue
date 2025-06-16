@@ -71,12 +71,13 @@
 
                     <div class="flex justify-between items-center mt-6">
                         <router-link to="/dokumentasi-acara">
-                            <button class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                            <button
+                                class="bg-[#074a5d] cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-[#063843] transition">
                                 Kembali
                             </button>
                         </router-link>
                         <button @click="submitForm"
-                            class="bg-[#074a5d] text-white px-4 py-2 rounded-lg hover:bg-[#063843] transition">
+                            class="cursor-pointer bg-[#074a5d] text-white px-4 py-2 rounded-lg hover:bg-[#063843] transition">
                             Simpan Dokumentasi
                         </button>
                     </div>
