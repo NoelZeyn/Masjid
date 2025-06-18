@@ -1,5 +1,8 @@
 # 🕌 Sistem Informasi Manajemen Masjid (MasjidOne)
 **REPOSITORY INI ADALAH COPY TEMPLATE DARI REPOSITORY ASLI**
+
+---
+
 **MasjidOne** adalah aplikasi berbasis web yang dirancang untuk memudahkan pengelolaan kegiatan operasional masjid seperti manajemen admin, inventaris barang, pengajuan, acara, kurban, hingga laporan keuangan. Sistem ini dibangun dengan struktur database relasional yang kompleks dan terorganisir.
 
 ---
