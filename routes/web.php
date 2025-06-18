@@ -7,8 +7,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/auth/google', [GoogleAuthController::class, 'redirect']);
-// Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
+Route::get('/auth/google', [GoogleAuthController::class, 'redirect']);
+Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 
 Route::get('/{any}', function () {
     return view('welcome'); 

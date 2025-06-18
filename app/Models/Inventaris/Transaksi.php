@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Inventaris;
 
+use App\Models\Admin;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaksi extends Model

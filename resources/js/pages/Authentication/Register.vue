@@ -28,7 +28,7 @@
                 />
                 <span
                     class="logo-text text-[20px] font-bold text-[#08607a] font-['Protest_Strike']"
-                    >MasjidCare</span
+                    >MasjidOne</span
                 >
             </div>
 
@@ -36,7 +36,7 @@
                 class="flex flex-col items-center text-center mb-5 w-[100%] max-w-md"
             >
                 <h2 class="text-3xl font-semibold mb-2 w-full">
-                    Register Akun MasjidCare
+                    Register Akun MasjidOne
                 </h2>
                 <p class="text-sm text-gray-500 mb-6">
                     Monitor, Manage, and Care Better
@@ -220,7 +220,7 @@ export default {
         },
         googleRegister() {
             const backendUrl =
-                import.meta.env.VITE_APP_URL || "http://localhost:3000";
+                import.meta.env.VITE_APP_URL || "http://127.0.0.1:8000";
             window.location.href = `${backendUrl}/auth/google`;
         },
         onFileChange(field, event) {

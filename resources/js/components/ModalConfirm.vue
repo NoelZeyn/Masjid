@@ -13,11 +13,11 @@
       </p>
       <div class="flex flex-col gap-3 mt-4">
         <button @click="$emit('cancel')"
-          class="w-full py-2 px-4 text-sm rounded-full border-2 border-[#08607A] text-[#08607A] hover:bg-[#08607A] hover:text-white transition-all">
+          class="cursor-pointer w-full py-2 px-4 text-sm rounded-full border-2 border-[#08607A] text-[#08607A] hover:bg-[#08607A] hover:text-white transition-all">
           Tidak
         </button>
         <button @click="$emit('confirm')"
-          class="w-full py-2 px-4 text-sm rounded-full bg-[#08607A] text-white hover:opacity-90 transition-all">
+          class="cursor-pointer w-full py-2 px-4 text-sm rounded-full bg-[#08607A] text-white hover:opacity-90 transition-all">
           Ya
         </button>
       </div>

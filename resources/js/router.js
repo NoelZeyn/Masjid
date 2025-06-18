@@ -20,6 +20,11 @@ import DokumentasiAcaraDetail from "./pages/Acara/DokumentasiAcara-info.vue";
 import DokumentasiAcaraEdit from "./pages/Acara/DokumentasiAcara-edit.vue";
 import DokumentasiAcaraAdd from "./pages/Acara/DokumentasiAcara-add.vue";
 import PesertaAcara from "./pages/Acara/PesertaAcara.vue";
+import InventarisDashboard from "./pages/Inventaris/InventarisDashboard.vue";
+import Supplier from "./pages/Inventaris/Supplier.vue";
+import SupplierEdit from "./pages/Inventaris/Supplier-edit.vue";
+import SupplierInfo from "./pages/Inventaris/Supplier-info.vue";
+import SupplierAdd from "./pages/Inventaris/Supplier-add.vue";
 
 // Fungsi validasi token
 const isTokenValid = () => {
@@ -65,16 +70,23 @@ const routes = [
     { path: "/acara-add", name: "AcaraAdd", component: AcaraAdd, meta: { requiresAuth: true, title: "Acara Add" } },
     { path: "/acara-informasi/:id", name: "AcaraInfo", component: AcaraInfo, meta: { requiresAuth: true, title: "Acara Informasi" } },
     { path: "/acara-edit/:id", name: "AcaraEdit", component: AcaraEdit, meta: { requiresAuth: true, title: "Acara Edit" } },
-
+    
     { path: "/dokumentasi-acara", name: "DokumentasiAcara", component: DokumentasiAcara, meta: { requiresAuth: true, title: "Dokumentasi Acara" } },
     { path: "/dokumentasi-acara-informasi/:id", name: "DokumentasiAcaraDetail", component: DokumentasiAcaraDetail, meta: { requiresAuth: true, title: "Dokumentasi Acara Detail" } },
     { path: "/dokumentasi-acara-edit/:id", name: "DokumentasiAcaraEdit", component: DokumentasiAcaraEdit, meta: { requiresAuth: true, title: "Dokumentasi Acara Edit" } },
     { path: "/dokumentasi-acara-add", name: "DokumentasiAcaraAdd", component: DokumentasiAcaraAdd, meta: { requiresAuth: true, title: "Dokumentasi Acara Add" } },
-
+    
     { path: "/peserta-acara", name: "Peserta", component: PesertaAcara, meta: { requiresAuth: true, title: "Peserta Acara" } },
     { path: "/dokumentasi-acara-informasi/:id", name: "DokumentasiAcaraDetail", component: DokumentasiAcaraDetail, meta: { requiresAuth: true, title: "Dokumentasi Acara Detail" } },
     { path: "/dokumentasi-acara-edit/:id", name: "DokumentasiAcaraEdit", component: DokumentasiAcaraEdit, meta: { requiresAuth: true, title: "Dokumentasi Acara Edit" } },
     { path: "/dokumentasi-acara-add", name: "DokumentasiAcaraAdd", component: DokumentasiAcaraAdd, meta: { requiresAuth: true, title: "Dokumentasi Acara Add" } },
+
+    { path: "/inventaris-dashboard", name: "InventarisDashboard", component: InventarisDashboard, meta: { requiresAuth: true, title: "Inventaris Dashboard" } },
+    { path: "/supplier", name: "Supplier", component: Supplier, meta: { requiresAuth: true, title: "Supplier" } },
+    { path: "/supplier-add", name: "SupplierAdd", component: SupplierAdd, meta: { requiresAuth: true, title: "Supplier Add" } },
+    { path: "/supplier-edit/:id", name: "SupplierEdit", component: SupplierEdit, meta: { requiresAuth: true, title: "Supplier Edit" } },
+    { path: "/supplier-informasi/:id", name: "SupplierInfo", component: SupplierInfo, meta: { requiresAuth: true, title: "Supplier Informasi" } },
+    
 ];
 
 // Membuat router
