@@ -3,19 +3,29 @@
         <!-- Hamburger Button (mobile only) -->
         <button
             class="fixed top-2.5 left-2.5 z-[1001] bg-white border border-gray-300 px-3 py-2 text-lg cursor-pointer md:hidden"
-            @click="toggleSidebar">
+            @click="toggleSidebar"
+        >
             ☰
         </button>
 
         <!-- Sidebar -->
-        <aside :class="[
-            'transition-transform duration-300 z-[1000] fixed md:static top-0 left-0 min-h-screen w-[320px] bg-white border-r border-gray-200 pl-7 pt-7 flex flex-col gap-6',
-            { '-translate-x-full': !isSidebarOpen && isMobile },
-        ]">
+        <aside
+            :class="[
+                'transition-transform duration-300 z-[1000] fixed md:static top-0 left-0 min-h-screen w-[320px] bg-white border-r border-gray-200 pl-7 pt-7 flex flex-col gap-6',
+                { '-translate-x-full': !isSidebarOpen && isMobile },
+            ]"
+        >
             <!-- Logo -->
             <div class="flex items-center gap-1 border-b border-gray-200 pb-2">
-                <img :src="logoImage" alt="Logo" class="w-[35px] object-cover rounded-t-[10px] mt-[-5px]" />
-                <span class="logo-text text-[20px] font-bold text-[#08607a] font-['Protest_Strike']">MasjidCare</span>
+                <img
+                    :src="logoImage"
+                    alt="Logo"
+                    class="w-[35px] object-cover rounded-t-[10px] mt-[-5px]"
+                />
+                <span
+                    class="logo-text text-[20px] font-bold text-[#08607a] font-['Protest_Strike']"
+                    >MasjidOne</span
+                >
             </div>
 
             <!-- Menu Utama -->
@@ -24,43 +34,110 @@
                     Main Menu
                 </p>
                 <ul>
-                    <router-link v-if="role !== 'ss'" to="/dashboard" class="block">
+                    <router-link
+                        v-if="role !== 'ss'"
+                        to="/dashboard"
+                        class="block"
+                    >
                         <li :class="menuClass('dashboard')">
-                            <img src="@/assets/dashboard.svg" class="w-5" alt="Dashboard" />
+                            <img
+                                src="@/assets/dashboard.svg"
+                                class="w-5"
+                                alt="Dashboard"
+                            />
                             <span>Dashboard</span>
                         </li>
                     </router-link>
-                    <router-link v-if="role !== 'ss'" to="/feature" class="block">
+                    <router-link
+                        v-if="role !== 'ss'"
+                        to="/feature"
+                        class="block"
+                    >
                         <li :class="menuClass('feature')">
-                            <img src="@/assets/data1.svg" class="w-5" alt="Feature" />
+                            <img
+                                src="@/assets/data1.svg"
+                                class="w-5"
+                                alt="Feature"
+                            />
                             <span>Feature</span>
                         </li>
                     </router-link>
 
-                    <router-link v-if="role !== 'ss'" to="/acara-dashboard" class="block">
-                        <li :class="menuClass('acara')" @click="setActive('Acara')">
-                            <img src="@/assets/posko.svg" class="w-5" alt="acara" />
+                    <router-link
+                        v-if="role !== 'ss'"
+                        to="/inventaris-dashboard"
+                        class="block"
+                    >
+                        <li
+                            :class="menuClass('inventaris')"
+                            @click="setActive('Inventaris')"
+                        >
+                            <img
+                                src="@/assets/data1.svg"
+                                class="w-5"
+                                alt="acara"
+                            />
+                            <span>Inventaris</span>
+                        </li>
+                    </router-link>
+                    <router-link
+                        v-if="role !== 'ss'"
+                        to="/acara-dashboard"
+                        class="block"
+                    >
+                        <li
+                            :class="menuClass('acara')"
+                            @click="setActive('Acara')"
+                        >
+                            <img
+                                src="@/assets/posko.svg"
+                                class="w-5"
+                                alt="acara"
+                            />
                             <span>Acara</span>
                         </li>
                     </router-link>
 
-                    <router-link v-if="role !== 'ss'" to="/keuangan" class="block">
+                    <router-link
+                        v-if="role !== 'ss'"
+                        to="/keuangan"
+                        class="block"
+                    >
                         <li :class="menuClass('keuangan')">
-                            <img src="@/assets/data1.svg" class="w-5" alt="keuangan" />
+                            <img
+                                src="@/assets/data1.svg"
+                                class="w-5"
+                                alt="keuangan"
+                            />
                             <span>Keuangan</span>
                         </li>
                     </router-link>
 
                     <router-link v-if="role !== 'ss'" to="/infaq" class="block">
-                        <li :class="menuClass('infaq')" @click="setActive('infaq')">
-                            <img src="@/assets/laporan1.svg" class="w-5" alt="Iaporan" />
+                        <li
+                            :class="menuClass('infaq')"
+                            @click="setActive('infaq')"
+                        >
+                            <img
+                                src="@/assets/laporan1.svg"
+                                class="w-5"
+                                alt="Iaporan"
+                            />
                             <span>Infaq</span>
                         </li>
                     </router-link>
 
-                    <router-link v-if="role === 'Ketua'" to="/admin-verifikator" class="block">
+                    <router-link
+                        v-if="role === 'Ketua'"
+                        to="/admin-verifikator"
+                        class="block"
+                    >
                         <li :class="menuClass('verifikasi')">
-                            <img src="@/assets/profil.svg" class="w-5" alt="Verifikasi" />
+                            <img
+                                src="@/assets/profil.svg"
+                                class="w-5"
+                                alt="Verifikasi"
+                            />
                             <span>Verifikasi Admin</span>
                         </li>
                     </router-link>
@@ -73,20 +150,35 @@
                 <ul>
                     <router-link to="/profile" class="block">
                         <li :class="menuClass('profile')">
-                            <img src="@/assets/profil.svg" class="w-5" alt="Profile" />
+                            <img
+                                src="@/assets/profil.svg"
+                                class="w-5"
+                                alt="Profile"
+                            />
                             <span>Profile</span>
                         </li>
                     </router-link>
-                    <li class="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-[#7d7f81] hover:bg-slate-100 cursor-pointer"
-                        @click="showModalConfirm = true">
-                        <img src="@/assets/SignOut.svg" class="w-5" alt="Keluar" />
+                    <li
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-[#7d7f81] hover:bg-slate-100 cursor-pointer"
+                        @click="showModalConfirm = true"
+                    >
+                        <img
+                            src="@/assets/SignOut.svg"
+                            class="w-5"
+                            alt="Keluar"
+                        />
                         <span>Keluar</span>
                     </li>
                 </ul>
             </div>
 
-            <ModalConfirm :visible="showModalConfirm" title="Konfirmasi Logout"
-                message="Apakah Anda yakin ingin keluar?" @confirm="logout" @cancel="showModalConfirm = false" />
+            <ModalConfirm
+                :visible="showModalConfirm"
+                title="Konfirmasi Logout"
+                message="Apakah Anda yakin ingin keluar?"
+                @confirm="logout"
+                @cancel="showModalConfirm = false"
+            />
         </aside>
     </div>
 </template>

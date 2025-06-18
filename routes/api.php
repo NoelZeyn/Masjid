@@ -4,6 +4,10 @@ use App\Http\Controllers\Acara\AcaraController;
 use App\Http\Controllers\Acara\DokumentasiAcaraController;
 use App\Http\Controllers\Acara\PesertaAcaraController;
 use App\Http\Controllers\Authentication\AdminController;
+use App\Http\Controllers\Inventaris\BarangController;
+use App\Http\Controllers\Inventaris\RiwayatPenggunaanController;
+use App\Http\Controllers\Inventaris\SupplierController;
+use App\Http\Controllers\Inventaris\TransaksiController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,5 +45,11 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::get('kategori', [AcaraController::class, 'showKategori']);
 });
 
-
+Route::group(['middleware' => 'api'], function ($router) {
+    Route::apiResource( 'barang', BarangController::class);
+    Route::apiResource( 'supplier', SupplierController::class);
+    Route::get('supplier/search', [SupplierController::class, 'searchSupplier']);
+    Route::apiResource( 'transaksi', TransaksiController::class);
+    Route::apiResource( 'riwayat-penggunaan', RiwayatPenggunaanController::class);
+});
 Route::post('check', [AdminController::class, 'checkEmail']);

@@ -1,17 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Acara;
 
+use App\Http\Controllers\Controller;
+use App\Models\Acara\KategoriAcara;
 use Illuminate\Http\Request;
 
-class BarangController extends Controller
+class KategoriAcaraController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $kategori = KategoriAcara::all();
+        return response()->json([
+            'message' => 'Data kategori berhasil didapatkan',
+            'data' => $kategori,
+        ], 200);
     }
 
     /**

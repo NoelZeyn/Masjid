@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Inventaris\Transaksi;
 use App\Models\Kurban\Kurban;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;

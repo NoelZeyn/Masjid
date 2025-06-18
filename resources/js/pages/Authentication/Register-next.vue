@@ -26,7 +26,7 @@
                 />
                 <span
                     class="logo-text text-[20px] font-bold text-[#08607a] font-['Protest_Strike']"
-                    >MasjidCare</span
+                    >MasjidOne</span
                 >
             </div>
 

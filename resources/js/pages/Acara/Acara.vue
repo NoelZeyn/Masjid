@@ -94,6 +94,12 @@
                         <h3 class="text-sm font-semibold text-gray-900">
                             Data Acara Masjid
                         </h3>
+
+                        <button @click="exportToExcel"
+                            class="cursor-pointer text-sm font-semibold text-green-600 hover:text-green-800 border border-green-600 px-3 py-1 rounded-md">
+                            Export Excel
+                        </button>
+
                         <router-link to="/acara-add"
                             class="text-sm font-semibold text-[#074a5d] no-underline hover:text-[#0066cc] hover:no-underline">
                             Tambah Acara
@@ -123,9 +129,9 @@
                                 </td>
                                 <td>
                                     {{ formatTanggalRange(
-                                            news.tanggal_mulai,
-                                            news.tanggal_selesai
-                                        )
+                                        news.tanggal_mulai,
+                                        news.tanggal_selesai
+                                    )
                                     }}
                                 </td>
                                 <td>{{ news.waktu }}</td>
@@ -157,15 +163,35 @@
                     <div
                         class="flex justify-between items-center px-4 py-3 border-t border-gray-300 text-sm text-[#333436]">
                         <button @click="prevPage" :disabled="currentPage === 1"
-                            class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
+                            class="cursor-pointer px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
                             Prev
                         </button>
                         <span>Halaman {{ currentPage }} dari
                             {{ totalPages }}</span>
                         <button @click="nextPage" :disabled="currentPage === totalPages"
-                            class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
+                            class="cursor-pointer px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50">
                             Next
                         </button>
+                    </div>
+                    <!-- Tombol Tampilkan/Sembunyikan Chart -->
+                    <div class="flex justify-center mt-4">
+                        <button @click="toggleChart"
+                            class="cursor-pointer text-sm font-semibold text-blue-600 hover:text-blue-800 border border-blue-600 px-4 py-2 rounded-md">
+                            {{ showChart ? 'Sembunyikan Chart' : 'Tampilkan Chart' }}
+                        </button>
+                    </div>
+
+                    <!-- Tombol Ekstrak Gambar -->
+                    <div class="flex justify-center mt-4" v-if="showChart">
+                        <button @click="renderChart(true)"
+                            class="cursor-pointer text-sm font-semibold text-green-600 hover:text-green-800 border border-green-600 px-4 py-2 rounded-md">
+                            Ekstrak Gambar Chart
+                        </button>
+                    </div>
+
+                    <!-- Chart Canvas -->
+                    <div class="flex justify-center mt-4" v-show="showChart">
+                        <canvas id="hiddenChart" width="600" height="400"></canvas>
                     </div>
                 </div>
             </div>
@@ -186,6 +212,9 @@ import informasiIcon from "@/assets/Informasi.svg";
 import updateIcon from "@/assets/Edit.svg";
 import deleteIcon from "@/assets/Delete.svg";
 import axios from "axios";
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+import Chart from 'chart.js/auto';
 
 export default {
     name: "DataAcara",
@@ -195,7 +224,10 @@ export default {
         return {
             activeMenu: "acara",
             searchQuery: "",
+            showChart: false,
             showModal: false,
+            showSuccessAlert: false,
+            successMessage: "",
             acaraToDelete: null,
             dropdownOpen: null,
             debouncedSearch: null,
@@ -205,20 +237,9 @@ export default {
             selectedBulan: "",
             selectedTahun: "",
             selectedKategori: "",
-
             bulanOptions: [
-                "Januari",
-                "Februari",
-                "Maret",
-                "April",
-                "Mei",
-                "Juni",
-                "Juli",
-                "Agustus",
-                "September",
-                "Oktober",
-                "November",
-                "Desember",
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember",
             ],
             tahunOptions: [],
 
@@ -228,12 +249,17 @@ export default {
 
             currentPage: 1,
             itemsPerPage: 10,
-            showSuccessAlert: false,
-            successMessage: "",
         };
     },
 
     computed: {
+        filteredAcaraList() {
+            return this.acaraList
+                .filter(a => !this.selectedKategori || a.kategori.nama === this.selectedKategori)
+                .filter(a => !this.selectedBulan || this.formatBulan(a.tanggal_mulai) === this.selectedBulan)
+                .filter(a => !this.selectedTahun || this.formatTahun(a.tanggal_mulai) === this.selectedTahun)
+                .filter(a => !this.searchQuery || a.nama_acara.toLowerCase().includes(this.searchQuery.toLowerCase()));
+        },
         paginatedAcaraList() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             return this.acaraList.slice(start, start + this.itemsPerPage);
@@ -251,38 +277,126 @@ export default {
     },
 
     methods: {
-        // 🔍 FILTER / SEARCH
+        toggleChart() {
+            this.showChart = !this.showChart;
+            this.renderChart();
+        },
+
+        renderChart(exportAsImage = false) {
+            const canvas = document.getElementById('hiddenChart');
+            const ctx = canvas.getContext('2d');
+
+            // Ambil data dari acaraList
+            const acaraPerBulan = {};
+
+            this.acaraList.forEach(acara => {
+                const bulan = new Date(acara.tanggal_mulai).getMonth(); // 0-11
+                if (!acaraPerBulan[bulan]) {
+                    acaraPerBulan[bulan] = 1;
+                } else {
+                    acaraPerBulan[bulan]++;
+                }
+            });
+
+            // Siapkan label bulan dalam Bahasa Indonesia
+            const bulanLabels = [
+                "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+                "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
+            ];
+
+            // Buat data chart
+            const labels = bulanLabels;
+            const data = labels.map((_, index) => acaraPerBulan[index] || 0);
+
+            if (this.chartInstance) this.chartInstance.destroy();
+
+            this.chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Jumlah Acara',
+                        data,
+                        borderColor: 'rgba(59,130,246,1)',
+                        backgroundColor: 'rgba(59,130,246,0.2)',
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    animation: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Jumlah Acara per Bulan',
+                            font: { size: 18 },
+                            align: 'center'
+                        },
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Ekspor gambar jika diminta
+            if (exportAsImage) {
+                setTimeout(() => {
+                    const image = canvas.toDataURL("image/png");
+                    const link = document.createElement('a');
+                    link.href = image;
+                    link.download = 'jumlah-acara-per-bulan.png';
+                    link.click();
+                }, 500);
+            }
+        },
+
+        exportToExcel() {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Data Acara');
+
+            worksheet.columns = [
+                { header: 'No', key: 'no', width: 5 },
+                { header: 'Tanggal', key: 'tanggal', width: 20 },
+                { header: 'Waktu', key: 'waktu', width: 15 },
+                { header: 'Kategori', key: 'kategori', width: 20 },
+                { header: 'Nama Acara', key: 'nama', width: 30 },
+                { header: 'Lokasi', key: 'lokasi', width: 25 },
+            ];
+
+            this.filteredAcaraList.forEach((a, i) => {
+                worksheet.addRow({
+                    no: i + 1,
+                    tanggal: this.formatTanggalRange(a.tanggal_mulai, a.tanggal_selesai),
+                    waktu: a.waktu,
+                    kategori: a.kategori.nama,
+                    nama: a.nama_acara,
+                    lokasi: a.lokasi
+                });
+            });
+
+            workbook.xlsx.writeBuffer().then((buffer) => {
+                saveAs(new Blob([buffer]), 'Data_Acara.xlsx');
+            });
+        },
+
+        // 🔍 Search & Filter
         onInputSearch() {
             this.debouncedSearch();
         },
         searchAcara() {
             const token = localStorage.getItem("token");
             let url = "http://localhost:8000/api/search?";
+            if (this.searchQuery) url += `nama=${encodeURIComponent(this.searchQuery)}&`;
+            if (this.selectedBulan) url += `bulan=${encodeURIComponent(this.selectedBulan)}&`;
+            if (this.selectedTahun) url += `tahun=${encodeURIComponent(this.selectedTahun)}&`;
+            if (this.selectedKategori) url += `kategori=${encodeURIComponent(this.selectedKategori)}&`;
+            if (url.endsWith("&")) url = url.slice(0, -1);
 
-            if (this.searchQuery)
-                url += `nama=${encodeURIComponent(this.searchQuery)}&`;
-            if (this.selectedBulan)
-                url += `bulan=${encodeURIComponent(this.selectedBulan)}&`;
-            if (this.selectedTahun)
-                url += `tahun=${encodeURIComponent(this.selectedTahun)}&`;
-            if (this.selectedKategori)
-                url += `kategori=${encodeURIComponent(this.selectedKategori)}&`;
-
-            url = url.endsWith("&") ? url.slice(0, -1) : url;
-
-            axios
-                .get(url, { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(url, { headers: { Authorization: `Bearer ${token}` } })
                 .then((res) => {
-                    if (res.data.status === "success") {
-                        this.acaraList = res.data.data;
-                        this.currentPage = 1;
-                    } else {
-                        this.acaraList = [];
-                    }
+                    this.acaraList = res.data.status === "success" ? res.data.data : [];
+                    this.currentPage = 1;
                 })
-                .catch((err) => {
-                    console.error("Gagal mencari acara:", err);
-                });
+                .catch(err => console.error("Gagal mencari acara:", err));
         },
         selectOption(type, value) {
             if (type === "bulan") this.selectedBulan = value;
@@ -292,17 +406,14 @@ export default {
             this.searchAcara();
         },
 
-        // 📦 FETCH DATA
+        // 📦 Fetch
         async fetchLaporanAcara() {
             try {
                 const token = localStorage.getItem("token");
-                if (!token) throw new Error("Token tidak ditemukan");
                 const res = await axios.get("http://localhost:8000/api/acara", {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { Authorization: `Bearer ${token}` }
                 });
-                this.acaraList = res.data.data.sort(
-                    (a, b) => new Date(b.tanggal) - new Date(a.tanggal)
-                );
+                this.acaraList = res.data.data.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
             } catch (err) {
                 console.error("Gagal mengambil data:", err);
             }
@@ -310,59 +421,41 @@ export default {
         async fetchKategori() {
             try {
                 const token = localStorage.getItem("token");
-                if (!token) throw new Error("Token tidak ditemukan");
-                const res = await axios.get(
-                    "http://localhost:8000/api/kategori",
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
+                const res = await axios.get("http://localhost:8000/api/kategori", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 this.kategoriOptions = res.data.data;
             } catch (err) {
                 console.error("Gagal mengambil kategori:", err);
             }
         },
         generateTahunOptions() {
-            const currentYear = new Date().getFullYear();
-            for (
-                let year = currentYear + 50;
-                year >= currentYear - 50;
-                year--
-            ) {
-                this.tahunOptions.push(year.toString());
+            const current = new Date().getFullYear();
+            for (let y = current + 50; y >= current - 50; y--) {
+                this.tahunOptions.push(y.toString());
             }
         },
 
-        // 📅 FORMAT
-        formatTanggalRange(tglMulai, tglSelesai) {
-            const format = (tgl) => {
-                const date = new Date(tgl);
+        // 🧰 Utility
+        formatTanggalRange(start, end) {
+            const f = (tgl) => {
+                const d = new Date(tgl);
                 return {
-                    day: String(date.getDate()).padStart(2, "0"),
-                    month: date.toLocaleString("id-ID", { month: "long" }),
-                    year: date.getFullYear(),
+                    d: String(d.getDate()).padStart(2, "0"),
+                    m: d.toLocaleString("id-ID", { month: "long" }),
+                    y: d.getFullYear()
                 };
             };
-            const start = format(tglMulai);
-            const end = format(tglSelesai);
-
-            if (start.month === end.month && start.year === end.year) {
-                return `${start.day} - ${end.day} ${end.month} ${end.year}`;
-            } else if (start.year === end.year) {
-                return `${start.day} ${start.month} - ${end.day} ${end.month} ${end.year}`;
-            } else {
-                return `${start.day} ${start.month} ${start.year} - ${end.day} ${end.month} ${end.year}`;
-            }
+            const a = f(start), b = f(end);
+            if (a.m === b.m && a.y === b.y) return `${a.d} - ${b.d} ${b.m} ${b.y}`;
+            if (a.y === b.y) return `${a.d} ${a.m} - ${b.d} ${b.m} ${b.y}`;
+            return `${a.d} ${a.m} ${a.y} - ${b.d} ${b.m} ${b.y}`;
         },
-
-        // 🧰 UTILITY
-        debounce(func, wait) {
+        debounce(fn, wait) {
             let timeout;
             return (...args) => {
                 clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    func.apply(this, args);
-                }, wait);
+                timeout = setTimeout(() => fn.apply(this, args), wait);
             };
         },
         toggleDropdown(menu) {
@@ -376,27 +469,24 @@ export default {
             this.$router.push(`/acara-${action}/${acara.id}`);
         },
 
-        // ❌ DELETE
+        // ❌ Delete
         confirmDelete(acara) {
             this.acaraToDelete = acara;
             this.showModal = true;
         },
         cancelDelete() {
-            this.showModal = false;
             this.acaraToDelete = null;
+            this.showModal = false;
         },
         async deleteAcara() {
             try {
                 const token = localStorage.getItem("token");
-                await axios.delete(
-                    `http://localhost:8000/api/acara/${this.acaraToDelete.id}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
+                await axios.delete(`http://localhost:8000/api/acara/${this.acaraToDelete.id}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
                 this.successMessage = "Acara berhasil dihapus!";
                 this.showSuccessAlert = true;
-                setTimeout(() => (this.showSuccessAlert = false), 2000);
+                setTimeout(() => this.showSuccessAlert = false, 2000);
                 this.fetchLaporanAcara();
             } catch (err) {
                 console.error("Gagal menghapus acara:", err);
@@ -405,16 +495,17 @@ export default {
             }
         },
 
-        // ⏮️ PAGINATION
+        // ⏮️ Pagination
         nextPage() {
             if (this.currentPage < this.totalPages) this.currentPage++;
         },
         prevPage() {
             if (this.currentPage > 1) this.currentPage--;
-        },
-    },
+        }
+    }
 };
 </script>
+
 
 <style scoped>
 th,

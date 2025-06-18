@@ -1,6 +1,6 @@
-# 🕌 Sistem Informasi Manajemen Masjid (SIMMasjid)
+# 🕌 Sistem Informasi Manajemen Masjid (MasjidOne)
 
-**SIMMasjid** adalah aplikasi berbasis web yang dirancang untuk memudahkan pengelolaan kegiatan operasional masjid seperti manajemen admin, inventaris barang, pengajuan, acara, kurban, hingga laporan keuangan. Sistem ini dibangun dengan struktur database relasional yang kompleks dan terorganisir.
+**MasjidOne** adalah aplikasi berbasis web yang dirancang untuk memudahkan pengelolaan kegiatan operasional masjid seperti manajemen admin, inventaris barang, pengajuan, acara, kurban, hingga laporan keuangan. Sistem ini dibangun dengan struktur database relasional yang kompleks dan terorganisir.
 
 ---
 
